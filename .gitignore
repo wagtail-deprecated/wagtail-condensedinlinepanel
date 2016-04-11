@@ -1,0 +1,8 @@
+*.pyc
+.DS_Store
+.idea/*
+.idea/vcs.xml
+*.swp
+/venv/
+/node_modules
+/npm-debug.log
