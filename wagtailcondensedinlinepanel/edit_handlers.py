@@ -6,8 +6,6 @@ from modelcluster.forms import BaseChildFormSet
 
 from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
 
-from blackstone.categories.models import CORE_CATEGORIES_CHOICES, CustomCategory
-
 
 class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
     """
@@ -77,13 +75,6 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
         return json.dumps({
             # TODO: Make this field configurable
             'summaryTextField': 'name',
-
-            # TODO: Blackstone specific
-            'coreCategoryMap': dict(CORE_CATEGORIES_CHOICES),
-            'customCategoryMap': {
-                cat.id: cat.name
-                for cat in CustomCategory.objects.all()
-            },
 
             'forms': [
                 {
