@@ -1,0 +1,231 @@
+$color-green: #189370;
+$color-orange: #E9B04D;
+$color-red: #CD3238;
+
+
+.condensed-inline-panel {
+    // Fix header overlap
+    margin-top: 50px;
+
+
+    // Reset Wagtail's text-transform on h2's
+
+    h2 {
+        text-transform: none;
+    }
+
+
+    // Basic card styling
+
+    &__card {
+        box-sizing: border-box;
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+        border-radius: 2px;
+        overflow: hidden;
+        background-color: #FFF;
+        border: 1px solid #EEE;
+        transition: background-color 0.2s ease 0s;
+    }
+
+    &__card--editing {
+        height: auto;
+    }
+
+    &__card-header {
+        position: relative;
+        padding-left: 1.5em;
+        background-color: #fafafa;
+        height: 50px;
+
+        > h2 {
+            margin: 0;
+            line-height: 50px;
+        }
+    }
+
+
+    // Error styling
+
+    &__card--errors {
+        border-color: #CD3238;
+
+        &__card-header {
+            background-color: #FEEDEE;
+        }
+    }
+
+
+    // Hide deleted cards
+
+    &__card--deleted {
+        display: none;
+    }
+
+
+    // New/changed indicators
+
+    &__card--new {
+        border-left: 3px solid $color-green;
+    }
+
+    &__card--changed {
+        border-left: 3px solid $color-orange;
+    }
+
+
+    // Actions
+
+    &__actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 50px;
+    }
+
+    &__action {
+        display: inline-block;
+        transition: background-color 0.2s ease 0s;
+        font-size: 1.7em;
+        height: 100%;
+        width: 50px;
+        box-sizing: border-box;
+        padding-top: 0.5em;
+        text-align: center;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    &__action-edit {
+        color: #43B1B0;
+
+        &:hover {
+            background-color: darken(#43B1B0, 10%);
+            color: #fff;
+        }
+    }
+
+    &__action-delete {
+        color: #43B1B0;
+
+        &:hover {
+            background-color: $color-red;
+            color: #fff;
+        }
+    }
+
+    &__action-delete-confirm {
+        color: $color-red;
+
+        &:hover {
+            background-color: $color-red;
+            color: #fff;
+        }
+    }
+
+    &__action-delete-confirm-cancel {
+        color: #666;
+
+        &:hover {
+            background-color: #666;
+            color: #fff;
+        }
+    }
+
+    &__delete-confirm-message {
+        position: absolute;
+        right: 100px;
+        width: 250px;
+        line-height: 50px;
+        text-align: right;
+        padding-right: 1em;
+    }
+
+    &__action-close {
+        color: #fff;
+        background-color: #43B1B0;
+
+
+        &:hover {
+            background-color: darken(#43B1B0, 10%);
+        }
+    }
+
+
+    // Add button
+
+    &__gap {
+        text-align: right;
+    }
+
+    &__add-button {
+        color: #43B1B0;
+
+        &:hover {
+            color: darken(#43B1B0, 10%);
+        }
+    }
+
+
+    // Hide add button if the form is not orderable
+
+    &:not(.condensed-inline-panel--orderable) &__add-button {
+        visibility: hidden;
+    }
+
+
+    // Form
+
+    &__form {
+        display: none;
+        padding-left: 1.5em;
+
+        fieldset {
+            padding-top: 1em;  // Reduced from 4em
+            float: none;  // Is "float: left;" in Wagtail
+        }
+    }
+
+
+    // Show form when editing
+
+    &__card--editing &__form {
+        display: block;
+    }
+
+
+    // Drag and drop
+
+    &__gap--over {
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    &__gap-pseudoform {
+        height: 50px;
+        border: 3px dashed #71B2D4;
+        box-sizing: border-box;
+    }
+
+
+    // Hide form and next gap when dragging
+
+    &__card--dragging {
+        display: none;
+    }
+
+    &__card--dragging + &__gap {
+        display: none;
+    }
+
+
+    // Hide next gap if deleted
+
+    &__card--deleted + &__gap {
+        display: none;
+    }
+
+}

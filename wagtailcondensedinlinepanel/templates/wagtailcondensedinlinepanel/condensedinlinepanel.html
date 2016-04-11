@@ -1,0 +1,12 @@
+<div class="condensed-inline-panel{% if this.formset.can_order %} condensed-inline-panel--orderable{% endif %}" id="id_{{ self.formset.prefix }}" data-form-template="{{ self.empty_child.render_form_content|force_escape }}">
+    <input class="condensed-inline-panel__data" type="hidden" name="{{ self.formset.prefix }}" value="{{ self.formset.to_json }}">
+    <input class="condensed-inline-panel__delete" type="hidden" name="{{ self.formset.prefix }}-DELETE">
+
+    {% if this.formset.can_order %}
+        <input class="condensed-inline-panel__sort-order" type="hidden" name="{{ self.formset.prefix }}-ORDER">
+    {% endif %}
+
+    {{ self.formset.management_form }}
+
+    <div class="condensed-inline-panel__ui-container"></div>
+</div>
