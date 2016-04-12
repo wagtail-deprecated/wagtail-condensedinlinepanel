@@ -1,4 +1,4 @@
-# CondensedInlinePanel for Wagtail CMS
+# Condensed InlinePanel for Wagtail CMS
 
 This repository contains a drop-in replacement for Wagtail's ``InlinePanel``.
 It's designed with a lighter interface that's suitable for cases where there
