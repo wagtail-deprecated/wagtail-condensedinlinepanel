@@ -1,10 +1,14 @@
 import json
 import django
+from django import forms
 from django.template.loader import render_to_string
 
 from modelcluster.forms import BaseChildFormSet
 
 from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailimages.models import AbstractImage
+from wagtail.wagtaildocs.models import Document
 
 
 class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
@@ -61,19 +65,45 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             This function returns this extra data for a particular form in a mapping
             of field names => values.
             """
+            if not form.instance:
+                return {}
+
             data = {}
 
-            # TODO: Make this automatic
-            link_page = form.instance.link
+            # Find choosers
+            for bound_field in form:
+                field_name = bound_field.name
+                field = bound_field.field
+                value = bound_field.value()
 
-            if link_page:
-                return {
-                    'link': {
-                        'title': link_page.title,
-                    }
-                }
-            else:
-                return {}
+                if isinstance(field.widget, forms.HiddenInput):
+                    continue
+
+                if isinstance(field, forms.ModelChoiceField):
+                    model = field.queryset.model
+                    obj = model.objects.get(pk=value)
+
+                    if issubclass(model, Page):
+                        data[field_name] = {
+                            'title': obj.title
+                        }
+                    elif issubclass(model, AbstractImage):
+                        rendition = obj.get_rendition('max-130x130')
+                        data[field_name] = {
+                            'title': obj.title,
+                            'preview_image': {
+                                'src': rendition.url,
+                                'alt': rendition.alt,
+                                'width': rendition.width,
+                                'height': rendition.height,
+                            }
+                        }
+                    elif issubclass(model, Document):
+                        data[field_name] = {
+                            'title': obj.title
+                        }
+
+            return data
 
         return json.dumps({
             'forms': [
