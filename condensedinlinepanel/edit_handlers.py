@@ -103,8 +103,8 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
 
 
 class BaseCondensedInlinePanel(BaseInlinePanel):
-    template = 'wagtailcondensedinlinepanel/condensedinlinepanel.html'
-    js_template = 'wagtailcondensedinlinepanel/condensedinlinepanel.js'
+    template = 'condensedinlinepanel/condensedinlinepanel.html'
+    js_template = 'condensedinlinepanel/condensedinlinepanel.js'
     formset_class = BaseCondensedInlinePanelFormSet
 
     @classmethod

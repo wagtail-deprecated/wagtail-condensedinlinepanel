@@ -1,0 +1,6 @@
+include LICENSE *.rst *.txt
+graft condensedinlinepanel
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.scss
+global-exclude *.jsx

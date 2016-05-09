@@ -7,9 +7,9 @@ from wagtail.wagtailcore import hooks
 
 @hooks.register('insert_editor_js')
 def editor_js():
-    return '<script src="{0}"></script>'.format(static('wagtailcondensedinlinepanel/compiled/js/condensedinlinepanel.js'))
+    return '<script src="{0}"></script>'.format(static('condensedinlinepanel/compiled/condensedinlinepanel.bundle.js'))
 
 
 @hooks.register('insert_editor_css')
 def editor_css():
-    return '<link rel="stylesheet" href="{0}">'.format(static('wagtailcondensedinlinepanel/compiled/css/condensedinlinepanel.css'))
+    return '<link rel="stylesheet" href="{0}">'.format(static('condensedinlinepanel/compiled/condensedinlinepanel.css'))
