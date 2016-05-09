@@ -47,6 +47,9 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             data = self.process_post_data(data, *args, **kwargs)
         super(BaseCondensedInlinePanelFormSet, self).__init__(data, *args, **kwargs)
 
+        # TODO: Make this configurable
+        self.summary_text_field = 'name'
+
     def to_json(self):
         def get_form_extra_data(form):
             """
@@ -73,14 +76,9 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                 return {}
 
         return json.dumps({
-            # TODO: Make this field configurable
-            'summaryTextField': 'name',
-
             'forms': [
                 {
-                    # TODO: Make this field configurable
                     'id': i,
-                    'summaryText': form.instance.name,
                     'fields': {
                         field_name: form[field_name].value()
                         for field_name in form.fields.keys()
@@ -92,8 +90,6 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                 for i, form in enumerate(self)
             ],
             'emptyForm': {
-                # TODO: Make this configurable
-                'summaryText': "New case",
                 'fields': {
                     field_name: self.empty_form[field_name].value()
                     for field_name in self.empty_form.fields.keys()

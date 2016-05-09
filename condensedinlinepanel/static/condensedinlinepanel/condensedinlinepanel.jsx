@@ -482,7 +482,6 @@ class CardSet extends React.Component {
                 // Save the form data
                 form.isEditing = false;
                 form.fields = newFields;
-                form.summaryText = newFields[this.props.summaryTextField];
                 this.props.store.dispatch({
                     type: 'SET_FORM',
                     formId: form.id,
@@ -496,7 +495,7 @@ class CardSet extends React.Component {
             // Render the card component
             renderedCards.push(<Card key={form.id}
                                      formId={form.id}
-                                     summaryText={form.summaryText}
+                                     summaryText={form.fields[this.props.summaryTextField]}
                                      canEdit={this.props.canEdit}
                                      canDelete={this.props.canDelete}
                                      canOrder={this.props.canOrder}
@@ -536,7 +535,6 @@ class CardSet extends React.Component {
             this.props.store.dispatch({
                 type: 'ADD_FORM',
                 data: {
-                    summaryText: this.props.emptyForm.summaryText,
                     fields: this.props.emptyForm.fields,
                     extra: {},
                     errors: {},
@@ -586,6 +584,7 @@ export function init(id, options={}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
+    const summaryTextField = options['summaryTextField'];
 
     let element = document.getElementById(id);
     let totalFormsField = document.getElementById(id + '-TOTAL_FORMS');
@@ -599,7 +598,7 @@ export function init(id, options={}) {
     store.subscribe(() => {
         let state = JSON.parse(store.getState());
         ReactDOM.render(<CardSet forms={state.forms}
-                                 summaryTextField={state.summaryTextField}
+                                 summaryTextField={summaryTextField}
                                  canEdit={canEdit}
                                  canDelete={canDelete}
                                  canOrder={canOrder}
