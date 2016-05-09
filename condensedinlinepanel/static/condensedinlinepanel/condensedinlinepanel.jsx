@@ -169,11 +169,8 @@ class Card extends React.Component {
                 // Remove blank class
                 imageChooser.classList.remove('blank');
 
-                // Set title
-                imageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
-
                 // Preview image
-                let previewImage = imageChooser.querySelector('.preview-image img')[0];
+                let previewImage = imageChooser.querySelector('.preview-image img');
                 previewImage.src = this.props.extra[fieldName]['preview_image'].src;
                 previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
                 previewImage.width = this.props.extra[fieldName]['preview_image'].width;
