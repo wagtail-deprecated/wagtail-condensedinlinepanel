@@ -156,6 +156,30 @@ class Card extends React.Component {
                 pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
             }
         }
+
+        // HACK: Make image choosers work
+        let imageChoosers = formElement.getElementsByClassName('image-chooser');
+        for (let i = 0; i < imageChoosers.length; i++) {
+            let imageChooser = imageChoosers.item(i);
+            let fieldName = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/)[1];
+
+            if (this.props.fields[fieldName]) {
+                // Field has a value!
+
+                // Remove blank class
+                imageChooser.classList.remove('blank');
+
+                // Set title
+                imageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+
+                // Preview image
+                let previewImage = imageChooser.querySelector('.preview-image img')[0];
+                previewImage.src = this.props.extra[fieldName]['preview_image'].src;
+                previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
+                previewImage.width = this.props.extra[fieldName]['preview_image'].width;
+                previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+            }
+        }
     }
 
     shouldRenderForm(props=this.props) {
