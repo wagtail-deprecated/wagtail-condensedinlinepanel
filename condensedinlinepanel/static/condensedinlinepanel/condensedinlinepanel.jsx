@@ -591,6 +591,16 @@ export function init(id, options={}) {
 
     let store = createStore(reducer);
 
+    let sortCompareFunc = (a, b) => {
+        if (a.position > b.position) {
+            return 1;
+        } else if (a.position < b.position) {
+            return -1;
+        } else {
+            return 0;
+        }
+    };
+
     // Rerender component when state changes
     store.subscribe(() => {
         let state = JSON.parse(store.getState());
@@ -603,7 +613,7 @@ export function init(id, options={}) {
                                  emptyForm={state.emptyForm}
                                  formTemplate={element.dataset.formTemplate}
                                  formsetPrefix={id}
-                                 sortCompareFunc={((a, b) => a.position > b.position)} />, uiContainer);
+                                 sortCompareFunc={sortCompareFunc} />, uiContainer);
     });
 
     // Keep sort order field up to date
