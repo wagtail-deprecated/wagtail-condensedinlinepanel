@@ -115,7 +115,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                     },
                     'extra': get_form_extra_data(form),
                     'errors': json.loads(form.errors.as_json()),
-                    'position': i,
+                    'position': i + 1,
                 }
                 for i, form in enumerate(self)
             ],
