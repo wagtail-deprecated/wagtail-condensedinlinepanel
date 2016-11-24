@@ -299,20 +299,20 @@ class Card extends React.Component {
             form = <div className="condensed-inline-panel__form" dangerouslySetInnerHTML={this.getFormHtml()} />
         }
 
-        let card = <div className={this.getClassNames().join(' ')}>
-            <div className="condensed-inline-panel__card-header">
-                <ul className="condensed-inline-panel__actions">
-                    {this.renderActions()}
-                </ul>
-                <h2>{this.props.summaryText}</h2>
-            </div>
-            {form}
+        let header = <div className="condensed-inline-panel__card-header">
+            <ul className="condensed-inline-panel__actions">
+                {this.renderActions()}
+            </ul>
+            <h2>{this.props.summaryText}</h2>
         </div>;
 
         // Hook into react dnd
-        card = this.props.connectDragSource(card);
+        header = this.props.connectDragSource(header);
 
-        return card;
+        return <div className={this.getClassNames().join(' ')}>
+            {header}
+            {form}
+        </div>;
     }
 
     componentDidUpdate(prevProps, prevState) {
