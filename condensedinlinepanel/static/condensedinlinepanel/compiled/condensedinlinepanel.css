@@ -32,6 +32,8 @@
 .condensed-inline-panel__card-header > h2 {
 	margin: 0;
 	line-height: 50px;
+	text-overflow: ellipsis;
+	width: calc(100% - 100px);
 }
 
 .condensed-inline-panel__card--errors {
@@ -118,7 +120,9 @@
 	width: 250px;
 	line-height: 50px;
 	text-align: right;
+	padding-left: 1em;
 	padding-right: 1em;
+	background-color: #fafafa;
 }
 
 .condensed-inline-panel__action-close {
