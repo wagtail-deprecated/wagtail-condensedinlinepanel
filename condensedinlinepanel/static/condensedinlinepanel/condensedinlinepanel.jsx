@@ -411,7 +411,7 @@ class CardSet extends React.Component {
     initGaps(forms, onDND, onAdd) {
         /* Injects Gap components into an array of rendered cards */
 
-        let positionId = 0;
+        let positionId = 1;
         let newForms = [];
 
         // Add the top gap
@@ -538,7 +538,7 @@ class CardSet extends React.Component {
                     isNew: true,
                     hasChanged: true,
                     isEditing: true,
-                    position: this.props.forms.length,
+                    position: this.props.forms.length + 1,
                     id: formId,
                 }
             });
@@ -558,7 +558,7 @@ class CardSet extends React.Component {
         let addButton = null;
         if (this.props.canEdit) {
             let onClickAddButton = (e) => {
-                onAdd(0);
+                onAdd(1);
 
                 e.preventDefault();
                 return false;

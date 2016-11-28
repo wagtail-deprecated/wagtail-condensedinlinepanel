@@ -554,7 +554,7 @@ var CondensedInlinePanel =
 	        value: function initGaps(forms, onDND, onAdd) {
 	            /* Injects Gap components into an array of rendered cards */
 
-	            var positionId = 0;
+	            var positionId = 1;
 	            var newForms = [];
 
 	            // Add the top gap
@@ -688,7 +688,7 @@ var CondensedInlinePanel =
 	                        isNew: true,
 	                        hasChanged: true,
 	                        isEditing: true,
-	                        position: _this5.props.forms.length,
+	                        position: _this5.props.forms.length + 1,
 	                        id: formId
 	                    }
 	                });
@@ -708,7 +708,7 @@ var CondensedInlinePanel =
 	            var addButton = null;
 	            if (this.props.canEdit) {
 	                var onClickAddButton = function onClickAddButton(e) {
-	                    onAdd(0);
+	                    onAdd(1);
 
 	                    e.preventDefault();
 	                    return false;
