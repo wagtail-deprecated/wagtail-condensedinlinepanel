@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./condensedinlinepanel/static/condensedinlinepanel/compiled/",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react"
+    },
+    "files": [
+        "./condensedinlinepanel/static/condensedinlinepanel/condensedinlinepanel.tsx"
+    ]
+}
