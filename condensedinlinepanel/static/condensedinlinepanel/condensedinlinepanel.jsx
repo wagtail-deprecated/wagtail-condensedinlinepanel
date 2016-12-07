@@ -1,3 +1,5 @@
+/* @flow */
+
 import {createStore} from 'redux';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -5,7 +7,7 @@ import {DragSource, DropTarget, DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 
-export function reducer(state=null, action) {
+export function reducer(state: any = null, action: any) {
     if (action.type == 'SET_STATE') {
         return action.state;
     } else if (state == null) {
@@ -91,6 +93,10 @@ class Card extends React.Component {
      *  - onEditClose: Fired when the user clicks the "close" button in the form
      */
 
+    state: {
+        showDeleteConfirm: boolean;
+    };
+
     constructor(props) {
         super(props);
 
@@ -116,20 +122,26 @@ class Card extends React.Component {
         // Copy field data into the form
         for (let fieldName in this.props.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
-            fieldElement.value = this.props.fields[fieldName]
+
+            if (fieldElement instanceof HTMLInputElement) {
+                fieldElement.value = this.props.fields[fieldName];
+            }
         }
 
         // Add errors
         for (let fieldName in this.props.errors) {
             let fieldWrapper = document.getElementById(`${this.props.formPrefix}-${fieldName}`).closest('.field');
-            fieldWrapper.classList.add('error');
 
-            // Append error text to field content
-            let fieldContent = fieldWrapper.getElementsByClassName('field-content')[0] || fieldWrapper;
-            let errors = document.createElement('p');
-            errors.classList.add('error-message');
-            errors.innerHTML = `<span>${this.props.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
-            fieldContent.appendChild(errors);
+            if (fieldWrapper) {
+                fieldWrapper.classList.add('error');
+
+                // Append error text to field content
+                let fieldContent = fieldWrapper.getElementsByClassName('field-content')[0] || fieldWrapper;
+                let errors = document.createElement('p');
+                errors.classList.add('error-message');
+                errors.innerHTML = `<span>${this.props.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
+                fieldContent.appendChild(errors);
+            }
         }
 
         // Run any script tags embedded in the form HTML
@@ -179,7 +191,7 @@ class Card extends React.Component {
         }
     }
 
-    shouldRenderForm(props=this.props) {
+    shouldRenderForm(props) {
         /* Returns true if we need the form HTML to be rendered in the DOM */
 
         // Note, we still need the form HTML when the form has been edited/deleted
@@ -199,7 +211,9 @@ class Card extends React.Component {
 
         for (let fieldName in this.props.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
-            newFields[fieldName] = fieldElement.value;
+            if (fieldElement instanceof HTMLInputElement) {
+                newFields[fieldName] = fieldElement.value;
+            }
         }
 
         return this.props.onEditClose(e, newFields);
@@ -295,7 +309,7 @@ class Card extends React.Component {
 
     render() {
         let form = <div className="condensed-inline-panel__form" />;
-        if (this.shouldRenderForm()) {
+        if (this.shouldRenderForm(this.props)) {
             form = <div className="condensed-inline-panel__form" dangerouslySetInnerHTML={this.getFormHtml()} />
         }
 
@@ -317,14 +331,14 @@ class Card extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         // If the form has just been rendered, run initialiseForm
-        if (this.shouldRenderForm() && !this.shouldRenderForm(prevProps)) {
+        if (this.shouldRenderForm(this.props) && !this.shouldRenderForm(prevProps)) {
             this.initialiseForm();
         }
     }
 
     componentDidMount() {
         // If the form has just been rendered, run initialiseForm
-        if (this.shouldRenderForm()) {
+        if (this.shouldRenderForm(this.props)) {
             this.initialiseForm();
         }
     }
@@ -577,7 +591,7 @@ CardSet = DragDropContext(HTML5Backend)(CardSet);
 
 export {Card, CardSet};
 
-export function init(id, options={}) {
+export function init(id: any, options: any = {}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
@@ -627,7 +641,9 @@ export function init(id, options={}) {
                 sortOrders.push(state.forms[i].position);
             }
 
-            sortOrderField.value = JSON.stringify(sortOrders);
+            if (sortOrderField instanceof HTMLInputElement) {
+                sortOrderField.value = JSON.stringify(sortOrders);
+            }
         });
     }
 
@@ -643,18 +659,25 @@ export function init(id, options={}) {
             }
         }
 
-        deleteField.value = JSON.stringify(deletedForms);
+        if (deleteField instanceof HTMLInputElement) {
+            deleteField.value = JSON.stringify(deletedForms);
+        }
     });
 
     // Set initial state
-    store.dispatch({
-        type: 'SET_STATE',
-        state: dataField.value,
-    });
+    if (dataField instanceof HTMLInputElement) {
+        store.dispatch({
+            type: 'SET_STATE',
+            state: dataField.value,
+        });
+    }
 
     // Update TOTAL_FORMS when the number of forms changes
     store.subscribe(() => {
         let state = JSON.parse(store.getState());
-        totalFormsField.value = state.forms.length;
+
+        if (totalFormsField instanceof HTMLInputElement) {
+            totalFormsField.value = state.forms.length;
+        }
     });
 }
