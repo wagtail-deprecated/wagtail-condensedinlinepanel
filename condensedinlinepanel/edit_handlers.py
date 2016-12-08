@@ -81,27 +81,28 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
 
                 if isinstance(field, forms.ModelChoiceField):
                     model = field.queryset.model
-                    obj = model.objects.get(pk=value)
+                    obj = model.objects.filter(pk=value).first()
 
-                    if issubclass(model, Page):
-                        data[field_name] = {
-                            'title': obj.title
-                        }
-                    elif issubclass(model, AbstractImage):
-                        rendition = obj.get_rendition('max-130x130')
-                        data[field_name] = {
-                            'title': obj.title,
-                            'preview_image': {
-                                'src': rendition.url,
-                                'alt': rendition.alt,
-                                'width': rendition.width,
-                                'height': rendition.height,
+                    if obj is not None:
+                        if issubclass(model, Page):
+                            data[field_name] = {
+                                'title': obj.title
                             }
-                        }
-                    elif issubclass(model, Document):
-                        data[field_name] = {
-                            'title': obj.title
-                        }
+                        elif issubclass(model, AbstractImage):
+                            rendition = obj.get_rendition('max-130x130')
+                            data[field_name] = {
+                                'title': obj.title,
+                                'preview_image': {
+                                    'src': rendition.url,
+                                    'alt': rendition.alt,
+                                    'width': rendition.width,
+                                    'height': rendition.height,
+                                }
+                            }
+                        elif issubclass(model, Document):
+                            data[field_name] = {
+                                'title': obj.title
+                            }
 
             return data
 
@@ -132,6 +133,10 @@ class BaseCondensedInlinePanel(BaseInlinePanel):
     template = 'condensedinlinepanel/condensedinlinepanel.html'
     js_template = 'condensedinlinepanel/condensedinlinepanel.js'
     formset_class = BaseCondensedInlinePanelFormSet
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.formset.to_json()
 
     @classmethod
     def required_formsets(cls):
