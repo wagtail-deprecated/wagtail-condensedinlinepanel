@@ -1,14 +1,26 @@
-import {createStore} from 'redux';
+import {createStore, Store} from 'redux';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {DragSource, DropTarget, DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 
+interface FieldError {
+    code: string,
+    message: string,
+}
+
+
 interface Form {
     // The ID assigned by Wagtail
     // Note: Not the same as the primary key of the object
     id: number,
+
+    // Is the form being edited (aka. is it expanded?)
+    isEditing: boolean,
+
+    // Was the form created in this session?
+    isNew: boolean,
 
     // Has the form been deleted in this session?
     isDeleted: boolean,
@@ -18,6 +30,16 @@ interface Form {
 
     // The current position of the form in the panel (1 based)
     position: number,
+
+    // The field data. Mapping of field names to values
+    fields: {[name: string]: string;},
+
+    // Extra data about specific fields
+    // This includes useful stuff such as the title of a linked document or the source an image
+    extra: {[name: string]: any;},
+
+    // Field errors. Mapping of field names to list of errors
+    errors: {[name: string]: FieldError[];},
 }
 
 
@@ -103,28 +125,36 @@ export function reducer(state: string|null = null, action: Action): string|null 
 }
 
 
+type customiseActionsFn = (props: CardProps, actions: any[]) => void;
+type onAddFn = (position: number) => void;
+type onEditStartFn = (e: MouseEvent) => boolean;
+type onEditCloseFn = (e: MouseEvent, newFields: {[name: string]: any;}) => boolean;
+type onDeleteFn = (e: MouseEvent) => boolean;
+type onDNDFn = (formId: number, position: number) => void;
+
+
 interface CardProps {
-    formId: string,
+    formId: number,
     summaryText: string,
     canEdit: boolean,
     canDelete: boolean,
     canOrder: boolean,
     template: string,
     formPrefix: string,
-    fields: any,
-    extra: any,
-    errors: any,
+    fields: {[name: string]: any;},
+    extra: {[name: string]: any;},
+    errors: {[name: string]: FieldError[];},
     deleted: boolean,
     isEditing: boolean,
     isNew: boolean,
     hasChanged: boolean,
-    customiseActions: any
+    customiseActions: customiseActionsFn,
+    onEditStart: onEditStartFn,
+    onEditClose: onEditCloseFn
+    onDelete: onDeleteFn,
     dndKey: string,
     connectDragSource: any,
     isDragging: boolean,
-    onEditStart: any,
-    onEditClose: any,
-    onDelete: any,
 }
 
 
@@ -170,7 +200,7 @@ class Card extends React.Component<CardProps, CardState> {
      *  - onEditClose: Fired when the user clicks the "close" button in the form
      */
 
-    constructor(props) {
+    constructor(props: CardProps) {
         super(props);
 
         this.state = {
@@ -180,7 +210,7 @@ class Card extends React.Component<CardProps, CardState> {
 
     getFormHtml() {
         return {
-            __html: this.props.template.replace(/__prefix__/g, this.props.formId)
+            __html: this.props.template.replace(/__prefix__/g, this.props.formId.toString())
         };
     }
 
@@ -274,12 +304,12 @@ class Card extends React.Component<CardProps, CardState> {
 
     // Actions
 
-    onEditStart(e) {
+    onEditStart(e: MouseEvent) {
         return this.props.onEditStart(e);
     }
 
-    onEditClose(e) {
-        let newFields = {};
+    onEditClose(e: MouseEvent) {
+        let newFields: {[name: string]: string;} = {};
 
         for (let fieldName in this.props.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
@@ -292,7 +322,7 @@ class Card extends React.Component<CardProps, CardState> {
         return this.props.onEditClose(e, newFields);
     }
 
-    onDelete(e) {
+    onDelete(e: MouseEvent) {
         this.state.showDeleteConfirm = true;
         this.setState(this.state);
 
@@ -300,7 +330,7 @@ class Card extends React.Component<CardProps, CardState> {
         return false;
     }
 
-    onDeleteCancel(e) {
+    onDeleteCancel(e: MouseEvent) {
         this.state.showDeleteConfirm = false;
         this.setState(this.state);
 
@@ -308,7 +338,7 @@ class Card extends React.Component<CardProps, CardState> {
         return false;
     }
 
-    onDeleteConfirm(e) {
+    onDeleteConfirm(e: MouseEvent) {
         return this.props.onDelete(e);
     }
 
@@ -402,7 +432,7 @@ class Card extends React.Component<CardProps, CardState> {
         </div>;
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps: CardProps, prevState: CardState) {
         // If the form has just been rendered, run initialiseForm
         if (this.shouldRenderForm() && !this.shouldRenderForm(prevProps)) {
             this.initialiseForm();
@@ -418,31 +448,33 @@ class Card extends React.Component<CardProps, CardState> {
 }
 
 let dragSource = {
-    canDrag(props, monitor) {
+    canDrag(props: CardProps, monitor: any) {
         return props.canOrder;
     },
-    beginDrag(props, monitor, component) {
+    beginDrag(props: CardProps, monitor: any, component: any) {
         return {
             formId: props.formId
         };
     }
 }
 
-function dragSourceCollect(connect, monitor) {
+function dragSourceCollect(connect: any, monitor: any) {
     return {
         connectDragSource: connect.dragSource(),
         isDragging: monitor.isDragging(),
     };
 }
 
-let DraggableCard = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);
+
+// FIXME: Had to remove type because of https://github.com/gaearon/react-dnd/issues/581
+let DraggableCard: any = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);
 
 
 interface GapProps {
     position: number,
-    isOver: boolean,
-    onAdd: any,
-    onDND: any,
+    onAdd: onAddFn,
+    isOver: boolean
+    onDND: onDNDFn,
     connectDropTarget: any,
 }
 
@@ -452,7 +484,7 @@ class Gap extends React.Component<GapProps, {}> {
      * and a place for the "add new" button
     */
 
-    drop(formId) {
+    drop(formId: number) {
         this.props.onDND(formId, this.props.position);
     }
 
@@ -467,7 +499,7 @@ class Gap extends React.Component<GapProps, {}> {
                       <div className="condensed-inline-panel__gap-pseudoform" />
                   </div>;
         } else {
-            let onAdd = (e) => {
+            let onAdd = (e: any) => {
                 this.props.onAdd(this.props.position);
 
                 e.preventDefault();
@@ -487,12 +519,13 @@ class Gap extends React.Component<GapProps, {}> {
 }
 
 let dropTarget = {
-    drop(props, monitor, component) {
+    drop(props: any, monitor: any, component: any) {
+        console.log(props)
         component.drop(monitor.getItem().formId);
     }
 };
 
-function dropTargetCollect(connect, monitor) {
+function dropTargetCollect(connect: any, monitor: any) {
     return {
         connectDropTarget: connect.dropTarget(),
         isOver: monitor.canDrop() && monitor.isOver(),
@@ -503,9 +536,9 @@ let DroppableGap = DropTarget((props) => props.dndKey, dropTarget, dropTargetCol
 
 
 interface CardSetProps {
-    forms: any[],
-    sortCompareFunc: any,
-    store: any,
+    forms: Form[],
+    sortCompareFunc: (a: Form, b: Form) => 1 | 0 | -1,
+    store: Store<string>,
     dndKey: string,
     formsetPrefix: string,
     summaryTextField: string,
@@ -513,13 +546,13 @@ interface CardSetProps {
     canDelete: boolean,
     canOrder: boolean,
     formTemplate: string,
-    customiseCardActions: any,
-    onDND: any,
-    emptyForm: any,
+    customiseCardActions: customiseActionsFn,
+    onDND: onDNDFn,
+    emptyForm: Form,
 }
 
 class CardSet extends React.Component<CardSetProps, {}> {
-    initGaps(forms, onDND, onAdd) {
+    initGaps(forms: any[], onDND: onDNDFn, onAdd: onAddFn) {
         /* Injects Gap components into an array of rendered cards */
 
         let positionId = 1;
@@ -553,7 +586,7 @@ class CardSet extends React.Component<CardSetProps, {}> {
 
             // Event handlers
 
-            let onEditStart = (e) => {
+            let onEditStart = (e: MouseEvent) => {
                 /* Fired when the user clicks the "edit" button on the card */
 
                 // Start editing the card
@@ -569,7 +602,7 @@ class CardSet extends React.Component<CardSetProps, {}> {
                 return false;
             };
 
-            let onDelete = (e) => {
+            let onDelete = (e: MouseEvent) => {
                 /* Fired when the user clicks the "delete" button on the card */
 
                 // Set "DELETE" field
@@ -584,7 +617,7 @@ class CardSet extends React.Component<CardSetProps, {}> {
                 return false;
             };
 
-            let onEditClose = (e, newFields) => {
+            let onEditClose = (e: MouseEvent, newFields: {[name: string]: string;}) => {
                 /* Fired when the user clicks the "close" button in the form */
 
                 // Save the form data
@@ -634,7 +667,7 @@ class CardSet extends React.Component<CardSetProps, {}> {
             });
         });
 
-        let onAdd = (position) => {
+        let onAdd = (position: number) => {
             /* Fired when the user clicks the "add new" button */
 
             let formId = this.props.forms.length;
@@ -668,7 +701,7 @@ class CardSet extends React.Component<CardSetProps, {}> {
         // Create an add button if the form isn't orderable
         let addButton = null;
         if (this.props.canEdit) {
-            let onClickAddButton = (e) => {
+            let onClickAddButton = (e: any) => {
                 onAdd(1);
 
                 e.preventDefault();
@@ -689,7 +722,14 @@ let DNDCardSet: any = DragDropContext(HTML5Backend)(CardSet);
 
 export {Card, CardSet};
 
-export function init(id, options={}) {
+interface Options {
+    canEdit?: boolean,
+    canDelete?: boolean,
+    canOrder?: boolean,
+    summaryTextField?: string,
+}
+
+export function init(id: string, options: Options = {}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
@@ -703,7 +743,7 @@ export function init(id, options={}) {
 
     let store = createStore(reducer);
 
-    let sortCompareFunc = (a, b) => {
+    let sortCompareFunc = (a: Form, b: Form) => {
         if (a.position > b.position) {
             return 1;
         } else if (a.position < b.position) {

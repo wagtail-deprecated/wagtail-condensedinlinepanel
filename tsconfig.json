@@ -2,7 +2,7 @@
     "compilerOptions": {
         "outDir": "./condensedinlinepanel/static/condensedinlinepanel/compiled/",
         "sourceMap": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "module": "commonjs",
         "target": "es5",
         "jsx": "react"
