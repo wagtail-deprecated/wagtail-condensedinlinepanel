@@ -563,7 +563,7 @@ class CardSet extends React.Component {
                 e.preventDefault();
                 return false;
             };
-            addButton = <button className="condensed-inline-panel__top-add-button bicolor icon icon-plus" type="button" onClick={onClickAddButton}>Add</button>;
+            addButton = <button className="condensed-inline-panel__top-add-button button bicolor icon icon-plus" type="button" onClick={onClickAddButton}>Add</button>;
         }
 
         return <div>
