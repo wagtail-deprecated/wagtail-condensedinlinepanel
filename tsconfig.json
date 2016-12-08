@@ -8,6 +8,11 @@
         "jsx": "react"
     },
     "files": [
-        "./condensedinlinepanel/static/condensedinlinepanel/condensedinlinepanel.tsx"
+        "./condensedinlinepanel/static/condensedinlinepanel/condensedinlinepanel.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/types.ts",
+        "./condensedinlinepanel/static/condensedinlinepanel/state.ts",
+        "./condensedinlinepanel/static/condensedinlinepanel/components/Card.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/components/Gap.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/components/CardSet.tsx"
     ]
 }
