@@ -5,7 +5,57 @@ import {DragSource, DropTarget, DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 
-export function reducer(state=null, action) {
+interface Form {
+    // The ID assigned by Wagtail
+    // Note: Not the same as the primary key of the object
+    id: number,
+
+    // Has the form been deleted in this session?
+    isDeleted: boolean,
+
+    // Has the form been changed in this session?
+    hasChanged: boolean,
+
+    // The current position of the form in the panel (1 based)
+    position: number,
+}
+
+
+interface State {
+    // List of all the forms in this session, including deleted and new forms
+    forms: Form[],
+
+    // A form instance to copy when creating new forms. Has default values pre-filled
+    emptyForm: Form,
+}
+
+
+interface SetStateAction {
+    type: "SET_STATE",
+    state: string,
+}
+
+interface SetFormAction {
+    type: "SET_FORM",
+    formId: number,
+    data: Form,
+}
+
+interface AddFormAction {
+    type: "ADD_FORM",
+    data: Form,
+}
+
+interface MoveFormAction {
+    type: "MOVE_FORM",
+    formId: number,
+    position: number,
+}
+
+type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction;
+
+
+export function reducer(state: string|null = null, action: Action): string|null {
     if (action.type == 'SET_STATE') {
         return action.state;
     } else if (state == null) {
@@ -13,18 +63,18 @@ export function reducer(state=null, action) {
         return null;
     }
 
-    let deserialisedState = JSON.parse(state);
+    let deserializedState: State = JSON.parse(state);
 
     if (action.type == 'SET_FORM') {
-        deserialisedState.forms[action.formId] = action.data;
+        deserializedState.forms[action.formId] = action.data;
     }
 
     if (action.type == 'ADD_FORM') {
-        deserialisedState.forms.push(action.data);
+        deserializedState.forms.push(action.data);
     }
 
     if (action.type == 'MOVE_FORM') {
-        let movedForm = deserialisedState.forms[action.formId];
+        let movedForm = deserializedState.forms[action.formId];
         movedForm.hasChanged = true;
         let previousPosition = movedForm.position;
         let newPosition = action.position;
@@ -32,10 +82,10 @@ export function reducer(state=null, action) {
         movedForm.position = newPosition;
 
         // Update sort orders of all other forms
-        for (let i = 0; i < deserialisedState.forms.length; i++) {
+        for (let i = 0; i < deserializedState.forms.length; i++) {
             if (i == action.formId) continue;
 
-            let form = deserialisedState.forms[i];
+            let form = deserializedState.forms[i];
 
             // Forms after the previous position move up one
             if (form.position >= previousPosition) {
@@ -49,7 +99,7 @@ export function reducer(state=null, action) {
         }
     }
 
-    return JSON.stringify(deserialisedState);
+    return JSON.stringify(deserializedState);
 }
 
 
@@ -665,7 +715,7 @@ export function init(id, options={}) {
 
     // Rerender component when state changes
     store.subscribe(() => {
-        let state = JSON.parse(store.getState());
+        let state: State = JSON.parse(store.getState());
         ReactDOM.render(<DNDCardSet forms={state.forms}
                                  summaryTextField={summaryTextField}
                                  canEdit={canEdit}
@@ -682,7 +732,7 @@ export function init(id, options={}) {
     if (canOrder) {
         let sortOrderField = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
         store.subscribe(() => {
-            let state = JSON.parse(store.getState());
+            let state: State = JSON.parse(store.getState());
             let sortOrders = [];
 
             for (let i = 0; i< state.forms.length; i++) {
@@ -698,7 +748,7 @@ export function init(id, options={}) {
     // Keep delete field up to date
     let deleteField = element.getElementsByClassName('condensed-inline-panel__delete')[0];
     store.subscribe(() => {
-        let state = JSON.parse(store.getState());
+        let state: State = JSON.parse(store.getState());
         let deletedForms = [];
 
         for (let i = 0; i< state.forms.length; i++) {
@@ -722,10 +772,10 @@ export function init(id, options={}) {
 
     // Update TOTAL_FORMS when the number of forms changes
     store.subscribe(() => {
-        let state = JSON.parse(store.getState());
+        let state: State = JSON.parse(store.getState());
 
         if (totalFormsField instanceof HTMLInputElement) {
-            totalFormsField.value = state.forms.length;
+            totalFormsField.value = state.forms.length.toString();
         }
     });
 }
