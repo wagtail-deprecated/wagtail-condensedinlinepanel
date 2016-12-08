@@ -2,7 +2,8 @@
   "name": "wagtail-condensedinlinepanel",
   "version": "1.0.0",
   "scripts": {
-    "dev": "webpack -w"
+    "dev": "webpack -w",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "author": "Karl Hobley <karlhobley10@gmail.com>",
   "license": "BSD",
@@ -11,6 +12,7 @@
     "babel-loader": "^6.2.1",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
+    "flow-bin": "^0.36.0",
     "webpack": "^1.12.12"
   },
   "dependencies": {
