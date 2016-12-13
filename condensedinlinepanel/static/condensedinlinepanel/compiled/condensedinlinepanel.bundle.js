@@ -28712,10 +28712,8 @@ var CondensedInlinePanel =
 	                e.preventDefault();
 	                return false;
 	            };
-	            // Get summary text
-	            var summaryText = $("#" + this_1.props.formsetPrefix + "-" + form.id.toString() + "-image-chooser .preview-image img").attr('alt') || (form.extra ? (form.extra['image'] ? form.extra['image'].title : null) : null) || "";
 	            // Render the card component
-	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, formId: form.id, summaryText: summaryText, canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), fields: form.fields, extra: form.extra, errors: form.errors, deleted: form.isDeleted || false, isEditing: form.isEditing || false, isNew: form.isNew || false, hasChanged: form.hasChanged || false, customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
+	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, formId: form.id, summaryText: form.fields[this_1.props.summaryTextField], canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), fields: form.fields, extra: form.extra, errors: form.errors, deleted: form.isDeleted || false, isEditing: form.isEditing || false, isNew: form.isNew || false, hasChanged: form.hasChanged || false, customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
 	        };
 	        var this_1 = this;
 	        for (var i in sortedForms) {
@@ -28738,11 +28736,7 @@ var CondensedInlinePanel =
 	                type: 'ADD_FORM',
 	                data: {
 	                    fields: _this.props.emptyForm.fields,
-	                    extra: {
-	                        image: {
-	                            title: ''
-	                        }
-	                    },
+	                    extra: {},
 	                    errors: {},
 	                    isNew: true,
 	                    hasChanged: true,
