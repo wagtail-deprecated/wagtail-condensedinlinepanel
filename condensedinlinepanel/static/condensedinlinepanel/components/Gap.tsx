@@ -9,9 +9,10 @@ export type onDNDFn = (formId: number, position: number) => void;
 export interface GapProps {
     position: number,
     onAdd: onAddFn,
-    isOver: boolean
-    onDND: onDNDFn,
-    connectDropTarget: any,
+    dndKey: string,
+    isOver?: boolean
+    onDND?: onDNDFn,
+    connectDropTarget?: any,
 }
 
 
@@ -69,4 +70,4 @@ function dropTargetCollect(connect: any, monitor: any) {
     };
 }
 
-export let DroppableGap = DropTarget((props) => props.dndKey, dropTarget, dropTargetCollect)(Gap);
+export let DroppableGap: React.ComponentClass<GapProps> = DropTarget((props) => props.dndKey, dropTarget, dropTargetCollect)(Gap);

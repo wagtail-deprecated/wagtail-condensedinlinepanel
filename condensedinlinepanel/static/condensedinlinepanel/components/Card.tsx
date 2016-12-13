@@ -26,13 +26,13 @@ export interface CardProps {
     isEditing: boolean,
     isNew: boolean,
     hasChanged: boolean,
-    customiseActions: customiseActionsFn,
+    customiseActions?: customiseActionsFn,
     onEditStart: onEditStartFn,
     onEditClose: onEditCloseFn
     onDelete: onDeleteFn,
     dndKey: string,
-    connectDragSource: any,
-    isDragging: boolean,
+    connectDragSource?: any,
+    isDragging?: boolean,
 }
 
 
@@ -346,4 +346,4 @@ function dragSourceCollect(connect: any, monitor: any) {
 
 
 // FIXME: Had to remove type because of https://github.com/gaearon/react-dnd/issues/581
-export let DraggableCard: any = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);
+export let DraggableCard: React.ComponentClass<CardProps> = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);

@@ -12,15 +12,15 @@ export interface CardSetProps {
     forms: Form[],
     sortCompareFunc: (a: Form, b: Form) => 1 | 0 | -1,
     store: Store<string>,
-    dndKey: string,
+    dndKey?: string,
     formsetPrefix: string,
     summaryTextField: string,
     canEdit: boolean,
     canDelete: boolean,
     canOrder: boolean,
     formTemplate: string,
-    customiseCardActions: customiseActionsFn,
-    onDND: onDNDFn,
+    customiseCardActions?: customiseActionsFn,
+    onDND?: onDNDFn,
     emptyForm: Form,
 }
 
@@ -199,4 +199,4 @@ export class CardSet extends React.Component<CardSetProps, {}> {
 }
 
 // FIXME: Had to remove type because of https://github.com/gaearon/react-dnd/issues/581
-export let DNDCardSet: any = DragDropContext(HTML5Backend)(CardSet);
+export let DNDCardSet: React.ComponentClass<CardSetProps> = DragDropContext(HTML5Backend)(CardSet);
