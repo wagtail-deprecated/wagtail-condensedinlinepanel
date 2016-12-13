@@ -11,7 +11,7 @@ import {DroppableGap, onDNDFn, onAddFn} from './Gap';
 export interface CardSetProps {
     forms: Form[],
     sortCompareFunc: (a: Form, b: Form) => 1 | 0 | -1,
-    store: Store<string>,
+    store: Store<string | null | undefined>,
     dndKey?: string,
     formsetPrefix: string,
     summaryTextField: string,

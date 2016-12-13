@@ -23,7 +23,9 @@ export class Gap extends React.Component<GapProps, {}> {
     */
 
     drop(formId: number) {
-        this.props.onDND(formId, this.props.position);
+        if (this.props.onDND) {
+            this.props.onDND(formId, this.props.position);
+        }
     }
 
     render() {

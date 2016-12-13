@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import {Form} from './types';
-import {reducer, State} from './state';
+import {reducer, State, emptyState} from './state';
 import {DraggableCard} from './components/Card';
 import {DNDCardSet} from './components/CardSet';
 
@@ -23,9 +23,14 @@ export function init(id: string, options: Options = {}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
-    const summaryTextField = options['summaryTextField'];
+    const summaryTextField = options['summaryTextField'] || 'name';
 
     let element = document.getElementById(id);
+    if (element === null) {
+        console.error(`CondensedInlinePanel.init(): Element with id '${id}' does not exist.'`)
+        return;
+    }
+
     let totalFormsField = document.getElementById(id + '-TOTAL_FORMS');
     let dataField = element.getElementsByClassName('condensed-inline-panel__data')[0];
     let sortOrderField = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
@@ -45,7 +50,11 @@ export function init(id: string, options: Options = {}) {
 
     // Rerender component when state changes
     store.subscribe(() => {
-        let state: State = JSON.parse(store.getState());
+        if (element === null) {
+            return;
+        }
+
+        let state: State = JSON.parse(store.getState() || emptyState());
         ReactDOM.render(<DNDCardSet forms={state.forms}
                                  summaryTextField={summaryTextField}
                                  canEdit={canEdit}
@@ -62,7 +71,7 @@ export function init(id: string, options: Options = {}) {
     if (canOrder) {
         let sortOrderField = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
         store.subscribe(() => {
-            let state: State = JSON.parse(store.getState());
+            let state: State = JSON.parse(store.getState() || emptyState());
             let sortOrders = [];
 
             for (let i = 0; i< state.forms.length; i++) {
@@ -78,7 +87,7 @@ export function init(id: string, options: Options = {}) {
     // Keep delete field up to date
     let deleteField = element.getElementsByClassName('condensed-inline-panel__delete')[0];
     store.subscribe(() => {
-        let state: State = JSON.parse(store.getState());
+        let state: State = JSON.parse(store.getState() || emptyState());
         let deletedForms = [];
 
         for (let i = 0; i< state.forms.length; i++) {
@@ -102,7 +111,7 @@ export function init(id: string, options: Options = {}) {
 
     // Update TOTAL_FORMS when the number of forms changes
     store.subscribe(() => {
-        let state: State = JSON.parse(store.getState());
+        let state: State = JSON.parse(store.getState() || emptyState());
 
         if (totalFormsField instanceof HTMLInputElement) {
             totalFormsField.value = state.forms.length.toString();

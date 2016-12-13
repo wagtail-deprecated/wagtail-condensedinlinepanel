@@ -41,6 +41,28 @@ export interface MoveFormAction {
 export type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction;
 
 
+export function emptyState(): string {
+    /* Returns an empty state to use as a placeholder before an actual state is loaded */
+
+    let emptyState: State = {
+        forms: [],
+        emptyForm: {
+            id: 0,
+            isEditing: false,
+            isNew: false,
+            isDeleted: false,
+            hasChanged: false,
+            position: 1,
+            fields: {},
+            extra: {},
+            errors: {},
+        }
+    }
+
+    return JSON.stringify(emptyState);
+}
+
+
 export function reducer(state: string|null = null, action: Action): string|null {
     if (action.type == 'SET_STATE') {
         return action.state;

@@ -112,11 +112,19 @@ export class Card extends React.Component<CardProps, CardState> {
 
         // Add errors
         for (let fieldName in this.props.errors) {
-            let fieldWrapper = document.getElementById(`${this.props.formPrefix}-${fieldName}`).closest('.field');
-            fieldWrapper.classList.add('error');
+            let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
+            if (fieldElement === null) {
+                continue;
+            }
+            let fieldWrapperElement = fieldElement.closest('.field');
+            if (fieldWrapperElement === null) {
+                continue;
+            }
+
+            fieldWrapperElement.classList.add('error');
 
             // Append error text to field content
-            let fieldContent = fieldWrapper.getElementsByClassName('field-content')[0] || fieldWrapper;
+            let fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
             let errors = document.createElement('p');
             errors.classList.add('error-message');
             errors.innerHTML = `<span>${this.props.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
@@ -135,16 +143,20 @@ export class Card extends React.Component<CardProps, CardState> {
         let pageChoosers = formElement.getElementsByClassName('page-chooser');
         for (let i = 0; i < pageChoosers.length; i++) {
             let pageChooser = pageChoosers.item(i);
-            let fieldName = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/)[1];
+            let match = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
 
-            if (this.props.fields[fieldName]) {
-                // Field has a value!
+            if (match) {
+                let fieldName = match[1];
 
-                // Remove blank class
-                pageChooser.classList.remove('blank');
+                if (this.props.fields[fieldName]) {
+                    // Field has a value!
 
-                // Set title
-                pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+                    // Remove blank class
+                    pageChooser.classList.remove('blank');
+
+                    // Set title
+                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+                }
             }
         }
 
@@ -152,21 +164,25 @@ export class Card extends React.Component<CardProps, CardState> {
         let imageChoosers = formElement.getElementsByClassName('image-chooser');
         for (let i = 0; i < imageChoosers.length; i++) {
             let imageChooser = imageChoosers.item(i);
-            let fieldName = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/)[1];
+            let match = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
 
-            if (this.props.fields[fieldName]) {
-                // Field has a value!
+            if (match) {
+                let fieldName = match[1];
 
-                // Remove blank class
-                imageChooser.classList.remove('blank');
+                if (this.props.fields[fieldName]) {
+                    // Field has a value!
 
-                // Preview image
-                let previewImage = imageChooser.querySelector('.preview-image img');
-                if (previewImage instanceof HTMLImageElement) {
-                    previewImage.src = this.props.extra[fieldName]['preview_image'].src;
-                    previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
-                    previewImage.width = this.props.extra[fieldName]['preview_image'].width;
-                    previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+                    // Remove blank class
+                    imageChooser.classList.remove('blank');
+
+                    // Preview image
+                    let previewImage = imageChooser.querySelector('.preview-image img');
+                    if (previewImage instanceof HTMLImageElement) {
+                        previewImage.src = this.props.extra[fieldName]['preview_image'].src;
+                        previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
+                        previewImage.width = this.props.extra[fieldName]['preview_image'].width;
+                        previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+                    }
                 }
             }
         }

@@ -60,8 +60,12 @@ var CondensedInlinePanel =
 	    var canEdit = options['canEdit'] || true;
 	    var canDelete = options['canDelete'] || canEdit;
 	    var canOrder = options['canOrder'] || false;
-	    var summaryTextField = options['summaryTextField'];
+	    var summaryTextField = options['summaryTextField'] || 'name';
 	    var element = document.getElementById(id);
+	    if (element === null) {
+	        console.error("CondensedInlinePanel.init(): Element with id '" + id + "' does not exist.'");
+	        return;
+	    }
 	    var totalFormsField = document.getElementById(id + '-TOTAL_FORMS');
 	    var dataField = element.getElementsByClassName('condensed-inline-panel__data')[0];
 	    var sortOrderField = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
@@ -80,14 +84,17 @@ var CondensedInlinePanel =
 	    };
 	    // Rerender component when state changes
 	    store.subscribe(function () {
-	        var state = JSON.parse(store.getState());
+	        if (element === null) {
+	            return;
+	        }
+	        var state = JSON.parse(store.getState() || state_1.emptyState());
 	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, summaryTextField: summaryTextField, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
 	    });
 	    // Keep sort order field up to date
 	    if (canOrder) {
 	        var sortOrderField_1 = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
 	        store.subscribe(function () {
-	            var state = JSON.parse(store.getState());
+	            var state = JSON.parse(store.getState() || state_1.emptyState());
 	            var sortOrders = [];
 	            for (var i = 0; i < state.forms.length; i++) {
 	                sortOrders.push(state.forms[i].position);
@@ -100,7 +107,7 @@ var CondensedInlinePanel =
 	    // Keep delete field up to date
 	    var deleteField = element.getElementsByClassName('condensed-inline-panel__delete')[0];
 	    store.subscribe(function () {
-	        var state = JSON.parse(store.getState());
+	        var state = JSON.parse(store.getState() || state_1.emptyState());
 	        var deletedForms = [];
 	        for (var i = 0; i < state.forms.length; i++) {
 	            if (state.forms[i].isDeleted) {
@@ -120,7 +127,7 @@ var CondensedInlinePanel =
 	    }
 	    // Update TOTAL_FORMS when the number of forms changes
 	    store.subscribe(function () {
-	        var state = JSON.parse(store.getState());
+	        var state = JSON.parse(store.getState() || state_1.emptyState());
 	        if (totalFormsField instanceof HTMLInputElement) {
 	            totalFormsField.value = state.forms.length.toString();
 	        }
@@ -22574,6 +22581,25 @@ var CondensedInlinePanel =
 /***/ function(module, exports) {
 
 	"use strict";
+	function emptyState() {
+	    /* Returns an empty state to use as a placeholder before an actual state is loaded */
+	    var emptyState = {
+	        forms: [],
+	        emptyForm: {
+	            id: 0,
+	            isEditing: false,
+	            isNew: false,
+	            isDeleted: false,
+	            hasChanged: false,
+	            position: 1,
+	            fields: {},
+	            extra: {},
+	            errors: {},
+	        }
+	    };
+	    return JSON.stringify(emptyState);
+	}
+	exports.emptyState = emptyState;
 	function reducer(state, action) {
 	    if (state === void 0) { state = null; }
 	    if (action.type == 'SET_STATE') {
@@ -22696,10 +22722,17 @@ var CondensedInlinePanel =
 	        }
 	        // Add errors
 	        for (var fieldName in this.props.errors) {
-	            var fieldWrapper = document.getElementById(this.props.formPrefix + "-" + fieldName).closest('.field');
-	            fieldWrapper.classList.add('error');
+	            var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
+	            if (fieldElement === null) {
+	                continue;
+	            }
+	            var fieldWrapperElement = fieldElement.closest('.field');
+	            if (fieldWrapperElement === null) {
+	                continue;
+	            }
+	            fieldWrapperElement.classList.add('error');
 	            // Append error text to field content
-	            var fieldContent = fieldWrapper.getElementsByClassName('field-content')[0] || fieldWrapper;
+	            var fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
 	            var errors = document.createElement('p');
 	            errors.classList.add('error-message');
 	            errors.innerHTML = "<span>" + this.props.errors[fieldName].map(function (error) { return error.message; }).join(' ') + "</span>";
@@ -22715,31 +22748,37 @@ var CondensedInlinePanel =
 	        var pageChoosers = formElement.getElementsByClassName('page-chooser');
 	        for (var i = 0; i < pageChoosers.length; i++) {
 	            var pageChooser = pageChoosers.item(i);
-	            var fieldName = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/)[1];
-	            if (this.props.fields[fieldName]) {
-	                // Field has a value!
-	                // Remove blank class
-	                pageChooser.classList.remove('blank');
-	                // Set title
-	                pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+	            var match = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
+	            if (match) {
+	                var fieldName = match[1];
+	                if (this.props.fields[fieldName]) {
+	                    // Field has a value!
+	                    // Remove blank class
+	                    pageChooser.classList.remove('blank');
+	                    // Set title
+	                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+	                }
 	            }
 	        }
 	        // HACK: Make image choosers work
 	        var imageChoosers = formElement.getElementsByClassName('image-chooser');
 	        for (var i = 0; i < imageChoosers.length; i++) {
 	            var imageChooser = imageChoosers.item(i);
-	            var fieldName = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/)[1];
-	            if (this.props.fields[fieldName]) {
-	                // Field has a value!
-	                // Remove blank class
-	                imageChooser.classList.remove('blank');
-	                // Preview image
-	                var previewImage = imageChooser.querySelector('.preview-image img');
-	                if (previewImage instanceof HTMLImageElement) {
-	                    previewImage.src = this.props.extra[fieldName]['preview_image'].src;
-	                    previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
-	                    previewImage.width = this.props.extra[fieldName]['preview_image'].width;
-	                    previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+	            var match = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
+	            if (match) {
+	                var fieldName = match[1];
+	                if (this.props.fields[fieldName]) {
+	                    // Field has a value!
+	                    // Remove blank class
+	                    imageChooser.classList.remove('blank');
+	                    // Preview image
+	                    var previewImage = imageChooser.querySelector('.preview-image img');
+	                    if (previewImage instanceof HTMLImageElement) {
+	                        previewImage.src = this.props.extra[fieldName]['preview_image'].src;
+	                        previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
+	                        previewImage.width = this.props.extra[fieldName]['preview_image'].width;
+	                        previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+	                    }
 	                }
 	            }
 	        }
@@ -30742,7 +30781,9 @@ var CondensedInlinePanel =
 	     * and a place for the "add new" button
 	    */
 	    Gap.prototype.drop = function (formId) {
-	        this.props.onDND(formId, this.props.position);
+	        if (this.props.onDND) {
+	            this.props.onDND(formId, this.props.position);
+	        }
 	    };
 	    Gap.prototype.render = function () {
 	        var _this = this;
