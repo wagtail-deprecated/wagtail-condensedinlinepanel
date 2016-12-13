@@ -3,6 +3,12 @@ import {Form} from './types';
 
 export interface State {
     // List of all the forms in this session, including deleted and new forms
+    // Note: Each form has an ID, which is an index into this array. To prevent
+    // these IDs from becoming invalid, the forms are never reordered in this
+    // list, new forms are always appended to the end and deleted forms are not
+    // removed.
+    // Form ordering is instead represented by the "position" field on each form.
+    // and deletion status is represented by the "isDeleted" field.
     forms: Form[],
 
     // A form instance to copy when creating new forms. Has default values pre-filled
