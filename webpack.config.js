@@ -1,10 +1,10 @@
 module.exports = {
-    entry: "./condensedinlinepanel/static/condensedinlinepanel/condensedinlinepanel.tsx",
+    entry: "./condensedinlinepanel/static/condensedinlinepanel/src/condensedinlinepanel.tsx",
     output: {
         libraryTarget: "var",
         library: "CondensedInlinePanel",
         filename: "condensedinlinepanel.bundle.js",
-        path: __dirname + "/condensedinlinepanel/static/condensedinlinepanel/compiled"
+        path: __dirname + "/condensedinlinepanel/static/condensedinlinepanel/dist"
     },
 
     // Enable sourcemaps for debugging webpack's output.

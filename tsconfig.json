@@ -8,11 +8,11 @@
         "jsx": "react"
     },
     "files": [
-        "./condensedinlinepanel/static/condensedinlinepanel/condensedinlinepanel.tsx",
-        "./condensedinlinepanel/static/condensedinlinepanel/types.ts",
-        "./condensedinlinepanel/static/condensedinlinepanel/state.ts",
-        "./condensedinlinepanel/static/condensedinlinepanel/components/Card.tsx",
-        "./condensedinlinepanel/static/condensedinlinepanel/components/Gap.tsx",
-        "./condensedinlinepanel/static/condensedinlinepanel/components/CardSet.tsx"
+        "./condensedinlinepanel/static/condensedinlinepanel/src/condensedinlinepanel.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/src/types.ts",
+        "./condensedinlinepanel/static/condensedinlinepanel/src/state.ts",
+        "./condensedinlinepanel/static/condensedinlinepanel/src/components/Card.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/src/components/Gap.tsx",
+        "./condensedinlinepanel/static/condensedinlinepanel/src/components/CardSet.tsx"
     ]
 }
