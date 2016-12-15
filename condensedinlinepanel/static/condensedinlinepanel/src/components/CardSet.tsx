@@ -4,6 +4,7 @@ import {DragSource, DropTarget, DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import {Form} from '../types';
+import {State} from '../state';
 import {DraggableCard, customiseActionsFn, renderCardHeaderFn} from './Card';
 import {DroppableGap, onDNDFn, onAddFn} from './Gap';
 
@@ -11,7 +12,7 @@ import {DroppableGap, onDNDFn, onAddFn} from './Gap';
 export interface CardSetProps {
     forms: Form[],
     sortCompareFunc: (a: Form, b: Form) => 1 | 0 | -1,
-    store: Store<string | null | undefined>,
+    store: Store<State | null | undefined>,
     dndKey?: string,
     formsetPrefix: string,
     renderCardHeader: renderCardHeaderFn,

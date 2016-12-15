@@ -18,7 +18,7 @@ export interface State {
 
 export interface SetStateAction {
     type: "SET_STATE",
-    state: string,
+    state: State,
 }
 
 export interface SetFormAction {
@@ -41,10 +41,10 @@ export interface MoveFormAction {
 export type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction;
 
 
-export function emptyState(): string {
+export function emptyState(): State {
     /* Returns an empty state to use as a placeholder before an actual state is loaded */
 
-    let emptyState: State = {
+    return {
         forms: [],
         emptyForm: {
             id: 0,
@@ -58,12 +58,10 @@ export function emptyState(): string {
             errors: {},
         }
     }
-
-    return JSON.stringify(emptyState);
 }
 
 
-export function reducer(state: string|null = null, action: Action): string|null {
+export function reducer(state: State|null = null, action: Action): State|null {
     if (action.type == 'SET_STATE') {
         return action.state;
     } else if (state == null) {
@@ -71,18 +69,24 @@ export function reducer(state: string|null = null, action: Action): string|null 
         return null;
     }
 
-    let deserializedState: State = JSON.parse(state);
+    let {forms, emptyForm} = state;
 
     if (action.type == 'SET_FORM') {
-        deserializedState.forms[action.formId] = action.data;
+        let newForms = forms.slice();
+        newForms[action.formId] = action.data;
+        return {forms: newForms, emptyForm};
     }
 
     if (action.type == 'ADD_FORM') {
-        deserializedState.forms.push(action.data);
+        let newForms = forms.slice();
+        newForms.push(action.data);
+        return {forms: newForms, emptyForm};
     }
 
     if (action.type == 'MOVE_FORM') {
-        let movedForm = deserializedState.forms[action.formId];
+        let newForms = forms.slice();
+
+        let movedForm = newForms[action.formId];
         movedForm.hasChanged = true;
         let previousPosition = movedForm.position;
         let newPosition = action.position;
@@ -90,10 +94,10 @@ export function reducer(state: string|null = null, action: Action): string|null 
         movedForm.position = newPosition;
 
         // Update sort orders of all other forms
-        for (let i = 0; i < deserializedState.forms.length; i++) {
+        for (let i = 0; i < newForms.length; i++) {
             if (i == action.formId) continue;
 
-            let form = deserializedState.forms[i];
+            let form = newForms[i];
 
             // Forms after the previous position move up one
             if (form.position >= previousPosition) {
@@ -105,7 +109,9 @@ export function reducer(state: string|null = null, action: Action): string|null 
                 form.position++;
             }
         }
+
+        return {forms: newForms, emptyForm};
     }
 
-    return JSON.stringify(deserializedState);
+    return {forms, emptyForm};
 }

@@ -61,7 +61,7 @@ export function init(id: string, options: Options = {}) {
             return;
         }
 
-        let state: State = JSON.parse(store.getState() || emptyState());
+        let state = store.getState() || emptyState();
         ReactDOM.render(<DNDCardSet forms={state.forms}
                                  renderCardHeader={renderCardHeader}
                                  canEdit={canEdit}
@@ -78,7 +78,7 @@ export function init(id: string, options: Options = {}) {
     if (canOrder) {
         let sortOrderField = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
         store.subscribe(() => {
-            let state: State = JSON.parse(store.getState() || emptyState());
+            let state = store.getState() || emptyState();
             let sortOrders = [];
 
             for (let i = 0; i< state.forms.length; i++) {
@@ -94,7 +94,7 @@ export function init(id: string, options: Options = {}) {
     // Keep delete field up to date
     let deleteField = element.getElementsByClassName('condensed-inline-panel__delete')[0];
     store.subscribe(() => {
-        let state: State = JSON.parse(store.getState() || emptyState());
+        let state = store.getState() || emptyState();
         let deletedForms = [];
 
         for (let i = 0; i< state.forms.length; i++) {
@@ -112,13 +112,13 @@ export function init(id: string, options: Options = {}) {
     if (dataField instanceof HTMLInputElement) {
         store.dispatch({
             type: 'SET_STATE',
-            state: dataField.value,
+            state: JSON.parse(dataField.value),
         });
     }
 
     // Update TOTAL_FORMS when the number of forms changes
     store.subscribe(() => {
-        let state: State = JSON.parse(store.getState() || emptyState());
+        let state = store.getState() || emptyState();
 
         if (totalFormsField instanceof HTMLInputElement) {
             totalFormsField.value = state.forms.length.toString();
