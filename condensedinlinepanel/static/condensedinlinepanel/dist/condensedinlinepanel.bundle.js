@@ -92,14 +92,14 @@ var CondensedInlinePanel =
 	        if (element === null) {
 	            return;
 	        }
-	        var state = JSON.parse(store.getState() || state_1.emptyState());
+	        var state = store.getState() || state_1.emptyState();
 	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, renderCardHeader: renderCardHeader, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
 	    });
 	    // Keep sort order field up to date
 	    if (canOrder) {
 	        var sortOrderField_1 = element.getElementsByClassName('condensed-inline-panel__sort-order')[0];
 	        store.subscribe(function () {
-	            var state = JSON.parse(store.getState() || state_1.emptyState());
+	            var state = store.getState() || state_1.emptyState();
 	            var sortOrders = [];
 	            for (var i = 0; i < state.forms.length; i++) {
 	                sortOrders.push(state.forms[i].position);
@@ -112,7 +112,7 @@ var CondensedInlinePanel =
 	    // Keep delete field up to date
 	    var deleteField = element.getElementsByClassName('condensed-inline-panel__delete')[0];
 	    store.subscribe(function () {
-	        var state = JSON.parse(store.getState() || state_1.emptyState());
+	        var state = store.getState() || state_1.emptyState();
 	        var deletedForms = [];
 	        for (var i = 0; i < state.forms.length; i++) {
 	            if (state.forms[i].isDeleted) {
@@ -127,12 +127,12 @@ var CondensedInlinePanel =
 	    if (dataField instanceof HTMLInputElement) {
 	        store.dispatch({
 	            type: 'SET_STATE',
-	            state: dataField.value,
+	            state: JSON.parse(dataField.value),
 	        });
 	    }
 	    // Update TOTAL_FORMS when the number of forms changes
 	    store.subscribe(function () {
-	        var state = JSON.parse(store.getState() || state_1.emptyState());
+	        var state = store.getState() || state_1.emptyState();
 	        if (totalFormsField instanceof HTMLInputElement) {
 	            totalFormsField.value = state.forms.length.toString();
 	        }
@@ -22588,7 +22588,7 @@ var CondensedInlinePanel =
 	"use strict";
 	function emptyState() {
 	    /* Returns an empty state to use as a placeholder before an actual state is loaded */
-	    var emptyState = {
+	    return {
 	        forms: [],
 	        emptyForm: {
 	            id: 0,
@@ -22602,7 +22602,6 @@ var CondensedInlinePanel =
 	            errors: {},
 	        }
 	    };
-	    return JSON.stringify(emptyState);
 	}
 	exports.emptyState = emptyState;
 	function reducer(state, action) {
@@ -22614,15 +22613,20 @@ var CondensedInlinePanel =
 	        // Ignore everything until we get an initial state
 	        return null;
 	    }
-	    var deserializedState = JSON.parse(state);
+	    var forms = state.forms, emptyForm = state.emptyForm;
 	    if (action.type == 'SET_FORM') {
-	        deserializedState.forms[action.formId] = action.data;
+	        var newForms = forms.slice();
+	        newForms[action.formId] = action.data;
+	        return { forms: newForms, emptyForm: emptyForm };
 	    }
 	    if (action.type == 'ADD_FORM') {
-	        deserializedState.forms.push(action.data);
+	        var newForms = forms.slice();
+	        newForms.push(action.data);
+	        return { forms: newForms, emptyForm: emptyForm };
 	    }
 	    if (action.type == 'MOVE_FORM') {
-	        var movedForm = deserializedState.forms[action.formId];
+	        var newForms = forms.slice();
+	        var movedForm = newForms[action.formId];
 	        movedForm.hasChanged = true;
 	        var previousPosition = movedForm.position;
 	        var newPosition = action.position;
@@ -22630,10 +22634,10 @@ var CondensedInlinePanel =
 	            newPosition--;
 	        movedForm.position = newPosition;
 	        // Update sort orders of all other forms
-	        for (var i = 0; i < deserializedState.forms.length; i++) {
+	        for (var i = 0; i < newForms.length; i++) {
 	            if (i == action.formId)
 	                continue;
-	            var form = deserializedState.forms[i];
+	            var form = newForms[i];
 	            // Forms after the previous position move up one
 	            if (form.position >= previousPosition) {
 	                form.position--;
@@ -22643,8 +22647,9 @@ var CondensedInlinePanel =
 	                form.position++;
 	            }
 	        }
+	        return { forms: newForms, emptyForm: emptyForm };
 	    }
-	    return JSON.stringify(deserializedState);
+	    return { forms: forms, emptyForm: emptyForm };
 	}
 	exports.reducer = reducer;
 
@@ -22697,22 +22702,24 @@ var CondensedInlinePanel =
 	            }
 	        }
 	        // Add errors
-	        for (var fieldName in this.props.form.errors) {
-	            var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
-	            if (fieldElement === null) {
-	                continue;
+	        if (this.props.form.errors) {
+	            for (var fieldName in this.props.form.errors) {
+	                var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
+	                if (fieldElement === null) {
+	                    continue;
+	                }
+	                var fieldWrapperElement = fieldElement.closest('.field');
+	                if (fieldWrapperElement === null) {
+	                    continue;
+	                }
+	                fieldWrapperElement.classList.add('error');
+	                // Append error text to field content
+	                var fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
+	                var errors = document.createElement('p');
+	                errors.classList.add('error-message');
+	                errors.innerHTML = "<span>" + this.props.form.errors[fieldName].map(function (error) { return error.message; }).join(' ') + "</span>";
+	                fieldContent.appendChild(errors);
 	            }
-	            var fieldWrapperElement = fieldElement.closest('.field');
-	            if (fieldWrapperElement === null) {
-	                continue;
-	            }
-	            fieldWrapperElement.classList.add('error');
-	            // Append error text to field content
-	            var fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
-	            var errors = document.createElement('p');
-	            errors.classList.add('error-message');
-	            errors.innerHTML = "<span>" + this.props.form.errors[fieldName].map(function (error) { return error.message; }).join(' ') + "</span>";
-	            fieldContent.appendChild(errors);
 	        }
 	        // Run any script tags embedded in the form HTML
 	        var scriptTags = formElement.getElementsByTagName('script');
@@ -22818,7 +22825,7 @@ var CondensedInlinePanel =
 	        // Delete confirm hides all other actions
 	        if (this.props.canDelete && this.state.showDeleteConfirm) {
 	            actions = [
-	                React.createElement("li", { className: "condensed-inline-panel__delete-confirm-message" }, "Are you sure that you want to delete this?"),
+	                React.createElement("li", { key: "delete-confirm", className: "condensed-inline-panel__delete-confirm-message" }, "Are you sure that you want to delete this?"),
 	                React.createElement("li", { key: "delete", onClick: this.onDeleteConfirm.bind(this), className: "condensed-inline-panel__action condensed-inline-panel__action-delete-confirm icon icon-tick" }),
 	                React.createElement("li", { key: "cancel", onClick: this.onDeleteCancel.bind(this), className: "condensed-inline-panel__action condensed-inline-panel__action-delete-confirm-cancel icon icon-cross" }),
 	            ];
@@ -28692,12 +28699,13 @@ var CondensedInlinePanel =
 	            var onEditStart = function (e) {
 	                /* Fired when the user clicks the "edit" button on the card */
 	                // Start editing the card
-	                form.isEditing = true;
-	                form.hasChanged = true;
+	                var newForm = (JSON.parse(JSON.stringify(form)));
+	                newForm.isEditing = true;
+	                newForm.hasChanged = true;
 	                _this.props.store.dispatch({
 	                    type: 'SET_FORM',
-	                    formId: form.id,
-	                    data: form,
+	                    formId: newForm.id,
+	                    data: newForm,
 	                });
 	                e.preventDefault();
 	                return false;
@@ -28705,11 +28713,12 @@ var CondensedInlinePanel =
 	            var onDelete = function (e) {
 	                /* Fired when the user clicks the "delete" button on the card */
 	                // Set "DELETE" field
-	                form.isDeleted = true;
+	                var newForm = (JSON.parse(JSON.stringify(form)));
+	                newForm.isDeleted = true;
 	                _this.props.store.dispatch({
 	                    type: 'SET_FORM',
-	                    formId: form.id,
-	                    data: form,
+	                    formId: newForm.id,
+	                    data: newForm,
 	                });
 	                e.preventDefault();
 	                return false;
@@ -28717,12 +28726,13 @@ var CondensedInlinePanel =
 	            var onEditClose = function (e, newFields) {
 	                /* Fired when the user clicks the "close" button in the form */
 	                // Save the form data
-	                form.isEditing = false;
-	                form.fields = newFields;
+	                var newForm = (JSON.parse(JSON.stringify(form)));
+	                newForm.isEditing = false;
+	                newForm.fields = newFields;
 	                _this.props.store.dispatch({
 	                    type: 'SET_FORM',
-	                    formId: form.id,
-	                    data: form,
+	                    formId: newForm.id,
+	                    data: newForm,
 	                });
 	                e.preventDefault();
 	                return false;
