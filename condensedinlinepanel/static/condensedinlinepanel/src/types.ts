@@ -10,16 +10,16 @@ export interface Form {
     id: number,
 
     // Is the form being edited (aka. is it expanded?)
-    isEditing: boolean,
+    isEditing?: boolean,
 
     // Was the form created in this session?
-    isNew: boolean,
+    isNew?: boolean,
 
     // Has the form been deleted in this session?
-    isDeleted: boolean,
+    isDeleted?: boolean,
 
     // Has the form been changed in this session?
-    hasChanged: boolean,
+    hasChanged?: boolean,
 
     // The current position of the form in the panel (1 based)
     position: number,
@@ -32,5 +32,5 @@ export interface Form {
     extra: {[name: string]: any;},
 
     // Field errors. Mapping of field names to list of errors
-    errors: {[name: string]: FieldError[];},
+    errors?: {[name: string]: FieldError[];},
 }

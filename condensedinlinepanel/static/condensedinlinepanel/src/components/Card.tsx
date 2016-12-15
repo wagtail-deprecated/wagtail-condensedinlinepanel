@@ -107,24 +107,26 @@ export class Card extends React.Component<CardProps, CardState> {
         }
 
         // Add errors
-        for (let fieldName in this.props.form.errors) {
-            let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
-            if (fieldElement === null) {
-                continue;
-            }
-            let fieldWrapperElement = fieldElement.closest('.field');
-            if (fieldWrapperElement === null) {
-                continue;
-            }
+        if (this.props.form.errors) {
+            for (let fieldName in this.props.form.errors) {
+                let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
+                if (fieldElement === null) {
+                    continue;
+                }
+                let fieldWrapperElement = fieldElement.closest('.field');
+                if (fieldWrapperElement === null) {
+                    continue;
+                }
 
-            fieldWrapperElement.classList.add('error');
+                fieldWrapperElement.classList.add('error');
 
-            // Append error text to field content
-            let fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
-            let errors = document.createElement('p');
-            errors.classList.add('error-message');
-            errors.innerHTML = `<span>${this.props.form.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
-            fieldContent.appendChild(errors);
+                // Append error text to field content
+                let fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
+                let errors = document.createElement('p');
+                errors.classList.add('error-message');
+                errors.innerHTML = `<span>${this.props.form.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
+                fieldContent.appendChild(errors);
+            }
         }
 
         // Run any script tags embedded in the form HTML
