@@ -63,7 +63,7 @@ var CondensedInlinePanel =
 	    var summaryTextField = options['summaryTextField'] || 'name';
 	    var element = document.getElementById(id);
 	    if (element === null) {
-	        console.error("CondensedInlinePanel.init(): Element with id '" + id + "' does not exist.'");
+	        console.error("CondensedInlinePanel.init(): Element with id '" + id + "' does not exist.");
 	        return;
 	    }
 	    var totalFormsField = document.getElementById(id + '-TOTAL_FORMS');

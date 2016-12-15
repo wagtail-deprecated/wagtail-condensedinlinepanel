@@ -27,7 +27,7 @@ export function init(id: string, options: Options = {}) {
 
     let element = document.getElementById(id);
     if (element === null) {
-        console.error(`CondensedInlinePanel.init(): Element with id '${id}' does not exist.'`)
+        console.error(`CondensedInlinePanel.init(): Element with id '${id}' does not exist.`)
         return;
     }
 
