@@ -109,7 +109,6 @@ export class CardSet extends React.Component<CardSetProps, {}> {
 
             // Render the card component
             renderedCards.push(<DraggableCard key={form.id}
-                                     formId={form.id}
                                      form={form}
                                      renderCardHeader={this.props.renderCardHeader}
                                      canEdit={this.props.canEdit}
@@ -117,13 +116,6 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                                      canOrder={this.props.canOrder}
                                      template={this.props.formTemplate}
                                      formPrefix={`${this.props.formsetPrefix}-${form.id.toString()}`}
-                                     fields={form.fields}
-                                     extra={form.extra}
-                                     errors={form.errors}
-                                     deleted={form.isDeleted||false}
-                                     isEditing={form.isEditing||false}
-                                     isNew={form.isNew||false}
-                                     hasChanged={form.hasChanged||false}
                                      customiseActions={this.props.customiseCardActions}
                                      dndKey={this.props.dndKey||this.props.formsetPrefix}
                                      onEditStart={onEditStart}

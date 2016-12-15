@@ -13,7 +13,6 @@ export type renderCardHeaderFn = (form: Form) => {__html: string};
 
 
 export interface CardProps {
-    formId: number,
     form: Form,
     renderCardHeader: renderCardHeaderFn,
     canEdit: boolean,
@@ -21,13 +20,6 @@ export interface CardProps {
     canOrder: boolean,
     template: string,
     formPrefix: string,
-    fields: {[name: string]: any;},
-    extra: {[name: string]: any;},
-    errors: {[name: string]: FieldError[];},
-    deleted: boolean,
-    isEditing: boolean,
-    isNew: boolean,
-    hasChanged: boolean,
     customiseActions?: customiseActionsFn,
     onEditStart: onEditStartFn,
     onEditClose: onEditCloseFn
@@ -91,7 +83,7 @@ export class Card extends React.Component<CardProps, CardState> {
 
     getFormHtml() {
         return {
-            __html: this.props.template.replace(/__prefix__/g, this.props.formId.toString())
+            __html: this.props.template.replace(/__prefix__/g, this.props.form.id.toString())
         };
     }
 
@@ -104,16 +96,16 @@ export class Card extends React.Component<CardProps, CardState> {
         let formElement = reactElement.getElementsByClassName('condensed-inline-panel__form')[0];
 
         // Copy field data into the form
-        for (let fieldName in this.props.fields) {
+        for (let fieldName in this.props.form.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
 
             if (fieldElement instanceof HTMLInputElement) {
-                fieldElement.value = this.props.fields[fieldName]
+                fieldElement.value = this.props.form.fields[fieldName]
             }
         }
 
         // Add errors
-        for (let fieldName in this.props.errors) {
+        for (let fieldName in this.props.form.errors) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
             if (fieldElement === null) {
                 continue;
@@ -129,7 +121,7 @@ export class Card extends React.Component<CardProps, CardState> {
             let fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
             let errors = document.createElement('p');
             errors.classList.add('error-message');
-            errors.innerHTML = `<span>${this.props.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
+            errors.innerHTML = `<span>${this.props.form.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
             fieldContent.appendChild(errors);
         }
 
@@ -150,14 +142,14 @@ export class Card extends React.Component<CardProps, CardState> {
             if (match) {
                 let fieldName = match[1];
 
-                if (this.props.fields[fieldName]) {
+                if (this.props.form.fields[fieldName]) {
                     // Field has a value!
 
                     // Remove blank class
                     pageChooser.classList.remove('blank');
 
                     // Set title
-                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.form.extra[fieldName]['title'];
                 }
             }
         }
@@ -171,7 +163,7 @@ export class Card extends React.Component<CardProps, CardState> {
             if (match) {
                 let fieldName = match[1];
 
-                if (this.props.fields[fieldName]) {
+                if (this.props.form.fields[fieldName]) {
                     // Field has a value!
 
                     // Remove blank class
@@ -180,10 +172,10 @@ export class Card extends React.Component<CardProps, CardState> {
                     // Preview image
                     let previewImage = imageChooser.querySelector('.preview-image img');
                     if (previewImage instanceof HTMLImageElement) {
-                        previewImage.src = this.props.extra[fieldName]['preview_image'].src;
-                        previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
-                        previewImage.width = this.props.extra[fieldName]['preview_image'].width;
-                        previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+                        previewImage.src = this.props.form.extra[fieldName]['preview_image'].src;
+                        previewImage.alt = this.props.form.extra[fieldName]['preview_image'].alt;
+                        previewImage.width = this.props.form.extra[fieldName]['preview_image'].width;
+                        previewImage.height = this.props.form.extra[fieldName]['preview_image'].height;
                     }
                 }
             }
@@ -195,7 +187,7 @@ export class Card extends React.Component<CardProps, CardState> {
 
         // Note, we still need the form HTML when the form has been edited/deleted
         // so the changes get submitted back to Wagtail
-        return (props.isEditing || props.hasChanged || props.deleted) && props.canEdit;
+        return (props.form.isEditing || props.form.hasChanged || props.form.isDeleted) && props.canEdit;
     }
 
 
@@ -208,7 +200,7 @@ export class Card extends React.Component<CardProps, CardState> {
     onEditClose(e: MouseEvent) {
         let newFields: {[name: string]: string;} = {};
 
-        for (let fieldName in this.props.fields) {
+        for (let fieldName in this.props.form.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
 
             if (fieldElement instanceof HTMLInputElement) {
@@ -245,7 +237,7 @@ export class Card extends React.Component<CardProps, CardState> {
 
         // Edit/close action
         if (this.props.canEdit) {
-            if (this.props.isEditing) {
+            if (this.props.form.isEditing) {
                 actions.push(
                     <li key="edit-close" onClick={this.onEditClose.bind(this)} className="condensed-inline-panel__action condensed-inline-panel__action-close icon icon-edit"></li>
                 );
@@ -284,19 +276,19 @@ export class Card extends React.Component<CardProps, CardState> {
         /* Returns a list of class names to add to the card */
         let classes = ['condensed-inline-panel__card'];
 
-        if (Object.keys(this.props.errors).length > 0) {
+        if (Object.keys(this.props.form.errors).length > 0) {
             classes.push('condensed-inline-panel__card--errors');
         }
 
-        if (this.props.isNew) {
+        if (this.props.form.isNew) {
             classes.push('condensed-inline-panel__card--new');
-        } else if (this.props.hasChanged) {
+        } else if (this.props.form.hasChanged) {
             classes.push('condensed-inline-panel__card--changed');
         }
 
-        if (this.props.deleted) {
+        if (this.props.form.isDeleted) {
             classes.push('condensed-inline-panel__card--deleted');
-        } else if (this.props.isEditing) {
+        } else if (this.props.form.isEditing) {
             classes.push('condensed-inline-panel__card--editing');
         }
 
@@ -350,7 +342,7 @@ let dragSource = {
     },
     beginDrag(props: CardProps, monitor: any, component: any) {
         return {
-            formId: props.formId
+            formId: props.form.id
         };
     }
 }

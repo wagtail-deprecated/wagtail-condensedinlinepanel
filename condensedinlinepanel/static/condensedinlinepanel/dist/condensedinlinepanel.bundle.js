@@ -22709,7 +22709,7 @@ var CondensedInlinePanel =
 	    }
 	    Card.prototype.getFormHtml = function () {
 	        return {
-	            __html: this.props.template.replace(/__prefix__/g, this.props.formId.toString())
+	            __html: this.props.template.replace(/__prefix__/g, this.props.form.id.toString())
 	        };
 	    };
 	    Card.prototype.initialiseForm = function () {
@@ -22719,14 +22719,14 @@ var CondensedInlinePanel =
 	        var reactElement = ReactDOM.findDOMNode(this);
 	        var formElement = reactElement.getElementsByClassName('condensed-inline-panel__form')[0];
 	        // Copy field data into the form
-	        for (var fieldName in this.props.fields) {
+	        for (var fieldName in this.props.form.fields) {
 	            var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
 	            if (fieldElement instanceof HTMLInputElement) {
-	                fieldElement.value = this.props.fields[fieldName];
+	                fieldElement.value = this.props.form.fields[fieldName];
 	            }
 	        }
 	        // Add errors
-	        for (var fieldName in this.props.errors) {
+	        for (var fieldName in this.props.form.errors) {
 	            var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
 	            if (fieldElement === null) {
 	                continue;
@@ -22740,7 +22740,7 @@ var CondensedInlinePanel =
 	            var fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
 	            var errors = document.createElement('p');
 	            errors.classList.add('error-message');
-	            errors.innerHTML = "<span>" + this.props.errors[fieldName].map(function (error) { return error.message; }).join(' ') + "</span>";
+	            errors.innerHTML = "<span>" + this.props.form.errors[fieldName].map(function (error) { return error.message; }).join(' ') + "</span>";
 	            fieldContent.appendChild(errors);
 	        }
 	        // Run any script tags embedded in the form HTML
@@ -22756,12 +22756,12 @@ var CondensedInlinePanel =
 	            var match = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
 	            if (match) {
 	                var fieldName = match[1];
-	                if (this.props.fields[fieldName]) {
+	                if (this.props.form.fields[fieldName]) {
 	                    // Field has a value!
 	                    // Remove blank class
 	                    pageChooser.classList.remove('blank');
 	                    // Set title
-	                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.extra[fieldName]['title'];
+	                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.form.extra[fieldName]['title'];
 	                }
 	            }
 	        }
@@ -22772,17 +22772,17 @@ var CondensedInlinePanel =
 	            var match = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
 	            if (match) {
 	                var fieldName = match[1];
-	                if (this.props.fields[fieldName]) {
+	                if (this.props.form.fields[fieldName]) {
 	                    // Field has a value!
 	                    // Remove blank class
 	                    imageChooser.classList.remove('blank');
 	                    // Preview image
 	                    var previewImage = imageChooser.querySelector('.preview-image img');
 	                    if (previewImage instanceof HTMLImageElement) {
-	                        previewImage.src = this.props.extra[fieldName]['preview_image'].src;
-	                        previewImage.alt = this.props.extra[fieldName]['preview_image'].alt;
-	                        previewImage.width = this.props.extra[fieldName]['preview_image'].width;
-	                        previewImage.height = this.props.extra[fieldName]['preview_image'].height;
+	                        previewImage.src = this.props.form.extra[fieldName]['preview_image'].src;
+	                        previewImage.alt = this.props.form.extra[fieldName]['preview_image'].alt;
+	                        previewImage.width = this.props.form.extra[fieldName]['preview_image'].width;
+	                        previewImage.height = this.props.form.extra[fieldName]['preview_image'].height;
 	                    }
 	                }
 	            }
@@ -22793,7 +22793,7 @@ var CondensedInlinePanel =
 	        if (props === void 0) { props = this.props; }
 	        // Note, we still need the form HTML when the form has been edited/deleted
 	        // so the changes get submitted back to Wagtail
-	        return (props.isEditing || props.hasChanged || props.deleted) && props.canEdit;
+	        return (props.form.isEditing || props.form.hasChanged || props.form.isDeleted) && props.canEdit;
 	    };
 	    // Actions
 	    Card.prototype.onEditStart = function (e) {
@@ -22801,7 +22801,7 @@ var CondensedInlinePanel =
 	    };
 	    Card.prototype.onEditClose = function (e) {
 	        var newFields = {};
-	        for (var fieldName in this.props.fields) {
+	        for (var fieldName in this.props.form.fields) {
 	            var fieldElement = document.getElementById(this.props.formPrefix + "-" + fieldName);
 	            if (fieldElement instanceof HTMLInputElement) {
 	                newFields[fieldName] = fieldElement.value;
@@ -22829,7 +22829,7 @@ var CondensedInlinePanel =
 	        var actions = [];
 	        // Edit/close action
 	        if (this.props.canEdit) {
-	            if (this.props.isEditing) {
+	            if (this.props.form.isEditing) {
 	                actions.push(React.createElement("li", { key: "edit-close", onClick: this.onEditClose.bind(this), className: "condensed-inline-panel__action condensed-inline-panel__action-close icon icon-edit" }));
 	            }
 	            else {
@@ -22857,19 +22857,19 @@ var CondensedInlinePanel =
 	    Card.prototype.getClassNames = function () {
 	        /* Returns a list of class names to add to the card */
 	        var classes = ['condensed-inline-panel__card'];
-	        if (Object.keys(this.props.errors).length > 0) {
+	        if (Object.keys(this.props.form.errors).length > 0) {
 	            classes.push('condensed-inline-panel__card--errors');
 	        }
-	        if (this.props.isNew) {
+	        if (this.props.form.isNew) {
 	            classes.push('condensed-inline-panel__card--new');
 	        }
-	        else if (this.props.hasChanged) {
+	        else if (this.props.form.hasChanged) {
 	            classes.push('condensed-inline-panel__card--changed');
 	        }
-	        if (this.props.deleted) {
+	        if (this.props.form.isDeleted) {
 	            classes.push('condensed-inline-panel__card--deleted');
 	        }
-	        else if (this.props.isEditing) {
+	        else if (this.props.form.isEditing) {
 	            classes.push('condensed-inline-panel__card--editing');
 	        }
 	        if (this.props.isDragging) {
@@ -22912,7 +22912,7 @@ var CondensedInlinePanel =
 	    },
 	    beginDrag: function (props, monitor, component) {
 	        return {
-	            formId: props.formId
+	            formId: props.form.id
 	        };
 	    }
 	};
@@ -28757,7 +28757,7 @@ var CondensedInlinePanel =
 	                return false;
 	            };
 	            // Render the card component
-	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, formId: form.id, form: form, renderCardHeader: this_1.props.renderCardHeader, canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), fields: form.fields, extra: form.extra, errors: form.errors, deleted: form.isDeleted || false, isEditing: form.isEditing || false, isNew: form.isNew || false, hasChanged: form.hasChanged || false, customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
+	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, form: form, renderCardHeader: this_1.props.renderCardHeader, canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
 	        };
 	        var this_1 = this;
 	        for (var i in sortedForms) {
