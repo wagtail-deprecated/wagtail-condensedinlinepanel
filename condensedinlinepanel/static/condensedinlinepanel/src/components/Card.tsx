@@ -265,7 +265,7 @@ export class Card extends React.Component<CardProps, CardState> {
         // Delete confirm hides all other actions
         if (this.props.canDelete && this.state.showDeleteConfirm) {
             actions = [
-                <li className="condensed-inline-panel__delete-confirm-message">Are you sure that you want to delete this?</li>,
+                <li key="delete-confirm" className="condensed-inline-panel__delete-confirm-message">Are you sure that you want to delete this?</li>,
                 <li key="delete" onClick={this.onDeleteConfirm.bind(this)} className="condensed-inline-panel__action condensed-inline-panel__action-delete-confirm icon icon-tick"></li>,
                 <li key="cancel" onClick={this.onDeleteCancel.bind(this)} className="condensed-inline-panel__action condensed-inline-panel__action-delete-confirm-cancel icon icon-cross"></li>,
             ];
