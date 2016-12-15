@@ -4,7 +4,7 @@ import {DragSource, DropTarget, DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import {Form} from '../types';
-import {DraggableCard, customiseActionsFn} from './Card';
+import {DraggableCard, customiseActionsFn, renderCardHeaderFn} from './Card';
 import {DroppableGap, onDNDFn, onAddFn} from './Gap';
 
 
@@ -14,7 +14,7 @@ export interface CardSetProps {
     store: Store<string | null | undefined>,
     dndKey?: string,
     formsetPrefix: string,
-    summaryTextField: string,
+    renderCardHeader: renderCardHeaderFn,
     canEdit: boolean,
     canDelete: boolean,
     canOrder: boolean,
@@ -110,7 +110,8 @@ export class CardSet extends React.Component<CardSetProps, {}> {
             // Render the card component
             renderedCards.push(<DraggableCard key={form.id}
                                      formId={form.id}
-                                     summaryText={form.fields[this.props.summaryTextField]}
+                                     form={form}
+                                     renderCardHeader={this.props.renderCardHeader}
                                      canEdit={this.props.canEdit}
                                      canDelete={this.props.canDelete}
                                      canOrder={this.props.canOrder}

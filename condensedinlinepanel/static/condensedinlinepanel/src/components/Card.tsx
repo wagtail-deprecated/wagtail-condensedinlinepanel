@@ -2,18 +2,20 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {DragSource} from 'react-dnd';
 
-import {FieldError} from '../types';
+import {Form, FieldError} from '../types';
 
 
 export type customiseActionsFn = (props: CardProps, actions: any[]) => void;
 export type onEditStartFn = (e: MouseEvent) => boolean;
 export type onEditCloseFn = (e: MouseEvent, newFields: {[name: string]: any;}) => boolean;
 export type onDeleteFn = (e: MouseEvent) => boolean;
+export type renderCardHeaderFn = (form: Form) => {__html: string};
 
 
 export interface CardProps {
     formId: number,
-    summaryText: string,
+    form: Form,
+    renderCardHeader: renderCardHeaderFn,
     canEdit: boolean,
     canDelete: boolean,
     canOrder: boolean,
@@ -315,7 +317,7 @@ export class Card extends React.Component<CardProps, CardState> {
             <ul className="condensed-inline-panel__actions">
                 {this.renderActions()}
             </ul>
-            <h2>{this.props.summaryText}</h2>
+            <h2 dangerouslySetInnerHTML={this.props.renderCardHeader(this.props.form)} />
         </div>;
 
         // Hook into react dnd

@@ -55,12 +55,17 @@ var CondensedInlinePanel =
 	exports.Card = Card_1.DraggableCard;
 	var CardSet_1 = __webpack_require__(322);
 	exports.CardSet = CardSet_1.DNDCardSet;
+	function renderCardHeaderDefault(form) {
+	    return {
+	        __html: '',
+	    };
+	}
 	function init(id, options) {
 	    if (options === void 0) { options = {}; }
 	    var canEdit = options['canEdit'] || true;
 	    var canDelete = options['canDelete'] || canEdit;
 	    var canOrder = options['canOrder'] || false;
-	    var summaryTextField = options['summaryTextField'] || 'name';
+	    var renderCardHeader = options['renderCardHeader'] || renderCardHeaderDefault;
 	    var element = document.getElementById(id);
 	    if (element === null) {
 	        console.error("CondensedInlinePanel.init(): Element with id '" + id + "' does not exist.");
@@ -88,7 +93,7 @@ var CondensedInlinePanel =
 	            return;
 	        }
 	        var state = JSON.parse(store.getState() || state_1.emptyState());
-	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, summaryTextField: summaryTextField, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
+	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, renderCardHeader: renderCardHeader, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
 	    });
 	    // Keep sort order field up to date
 	    if (canOrder) {
@@ -22879,7 +22884,7 @@ var CondensedInlinePanel =
 	        }
 	        var header = React.createElement("div", { className: "condensed-inline-panel__card-header" },
 	            React.createElement("ul", { className: "condensed-inline-panel__actions" }, this.renderActions()),
-	            React.createElement("h2", null, this.props.summaryText));
+	            React.createElement("h2", { dangerouslySetInnerHTML: this.props.renderCardHeader(this.props.form) }));
 	        // Hook into react dnd
 	        header = this.props.connectDragSource(header);
 	        return React.createElement("div", { className: this.getClassNames().join(' ') },
@@ -28752,7 +28757,7 @@ var CondensedInlinePanel =
 	                return false;
 	            };
 	            // Render the card component
-	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, formId: form.id, summaryText: form.fields[this_1.props.summaryTextField], canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), fields: form.fields, extra: form.extra, errors: form.errors, deleted: form.isDeleted || false, isEditing: form.isEditing || false, isNew: form.isNew || false, hasChanged: form.hasChanged || false, customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
+	            renderedCards.push(React.createElement(Card_1.DraggableCard, { key: form.id, formId: form.id, form: form, renderCardHeader: this_1.props.renderCardHeader, canEdit: this_1.props.canEdit, canDelete: this_1.props.canDelete, canOrder: this_1.props.canOrder, template: this_1.props.formTemplate, formPrefix: this_1.props.formsetPrefix + "-" + form.id.toString(), fields: form.fields, extra: form.extra, errors: form.errors, deleted: form.isDeleted || false, isEditing: form.isEditing || false, isNew: form.isNew || false, hasChanged: form.hasChanged || false, customiseActions: this_1.props.customiseCardActions, dndKey: this_1.props.dndKey || this_1.props.formsetPrefix, onEditStart: onEditStart, onEditClose: onEditClose, onDelete: onDelete }));
 	        };
 	        var this_1 = this;
 	        for (var i in sortedForms) {

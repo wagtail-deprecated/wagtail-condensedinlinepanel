@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 
 import {Form} from './types';
 import {reducer, State, emptyState} from './state';
-import {DraggableCard} from './components/Card';
+import {DraggableCard, renderCardHeaderFn} from './components/Card';
 import {DNDCardSet} from './components/CardSet';
 
 
@@ -15,7 +15,14 @@ interface Options {
     canEdit?: boolean,
     canDelete?: boolean,
     canOrder?: boolean,
-    summaryTextField?: string,
+    renderCardHeader?: renderCardHeaderFn,
+}
+
+
+function renderCardHeaderDefault(form: Form) {
+    return {
+        __html: '',
+    }
 }
 
 
@@ -23,7 +30,7 @@ export function init(id: string, options: Options = {}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
-    const summaryTextField = options['summaryTextField'] || 'name';
+    const renderCardHeader = options['renderCardHeader'] || renderCardHeaderDefault;
 
     let element = document.getElementById(id);
     if (element === null) {
@@ -56,7 +63,7 @@ export function init(id: string, options: Options = {}) {
 
         let state: State = JSON.parse(store.getState() || emptyState());
         ReactDOM.render(<DNDCardSet forms={state.forms}
-                                 summaryTextField={summaryTextField}
+                                 renderCardHeader={renderCardHeader}
                                  canEdit={canEdit}
                                  canDelete={canDelete}
                                  canOrder={canOrder}

@@ -54,5 +54,5 @@ class MyPage(Page):
     content_panels = [
         ...
 
-        CondensedInlinePanel('carousel_items', label="Carousel items"),
+        CondensedInlinePanel('carousel_items', label="Carousel items", card_header_from_field="title"),
     ]
