@@ -64,12 +64,13 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                 /* Fired when the user clicks the "edit" button on the card */
 
                 // Start editing the card
-                form.isEditing = true;
-                form.hasChanged = true;
+                let newForm: Form = (JSON.parse(JSON.stringify(form)));
+                newForm.isEditing = true;
+                newForm.hasChanged = true;
                 this.props.store.dispatch({
                     type: 'SET_FORM',
-                    formId: form.id,
-                    data: form,
+                    formId: newForm.id,
+                    data: newForm,
                 });
 
                 e.preventDefault();
@@ -80,11 +81,12 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                 /* Fired when the user clicks the "delete" button on the card */
 
                 // Set "DELETE" field
-                form.isDeleted = true;
+                let newForm: Form = (JSON.parse(JSON.stringify(form)));
+                newForm.isDeleted = true;
                 this.props.store.dispatch({
                     type: 'SET_FORM',
-                    formId: form.id,
-                    data: form,
+                    formId: newForm.id,
+                    data: newForm,
                 });
 
                 e.preventDefault();
@@ -95,12 +97,13 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                 /* Fired when the user clicks the "close" button in the form */
 
                 // Save the form data
-                form.isEditing = false;
-                form.fields = newFields;
+                let newForm: Form = (JSON.parse(JSON.stringify(form)));
+                newForm.isEditing = false;
+                newForm.fields = newFields;
                 this.props.store.dispatch({
                     type: 'SET_FORM',
-                    formId: form.id,
-                    data: form,
+                    formId: newForm.id,
+                    data: newForm,
                 });
 
                 e.preventDefault();
