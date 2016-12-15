@@ -22670,35 +22670,6 @@ var CondensedInlinePanel =
 	     * When not being edited, this displays a card to the user
 	     * When being edited, it expands into a form interface
 	     *
-	     * props:
-	     *  - formId: The number of the form (as assigned by Wagtail)
-	     *  - summaryText: The text to show at the top
-	     *  - canEdit: (boolean)  Set to true if this card can be edited
-	     *  - canDelete: (boolean) Set to true if this card can be deleted
-	     *  - canOrder: (boolean) Set to true if this card can be moved
-	     *  - template: A HTML template to use for the form
-	     *  - formPrefix: The prefix appeneded to the beginning of the id of each field
-	     *  - fields: Mapping of field names to their current values
-	     *  - extra: Any extra data that might be useful for rendering fields (eg, title of chosen page)
-	     *  - errors: A mapping of field names to a list of errors
-	     *  - deleted: (boolean). Set when the card has been deleted
-	     *  - isEditing: (boolean). Set when this card is being edited (displays the expanded form)
-	     *  - isNew: (boolean). Set when this card has been created in this session
-	     *  - hasChanged (boolean). Set when this card has been changed in this session
-	     *  - customiseActions. A hook to allow the action buttons to be customised.
-	     *    The props are passed through in the first argument and the list of actions
-	     *    in the second argument
-	     *  - dndKey: A key to pass to react-dnd which is different for each cardset.
-	     *    This prevents cards from being ordered across different sets.
-	     *
-	     * The following props are added by react-dnd:
-	     *  - connectDragSource: Used to hook in react-dnd
-	     *  - isDragging: (boolean) Set when this card is being dragged
-	     *
-	     * events:
-	     *  - onEditStart: Fired when the user clicks the "edit" button on the card
-	     *  - onDelete: Fired when the user clicks the "delete" button on the card
-	     *  - onEditClose: Fired when the user clicks the "close" button in the form
 	     */
 	    function Card(props) {
 	        var _this = _super.call(this, props) || this;
