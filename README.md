@@ -17,7 +17,7 @@ may be hundreds of items in the panel.
 Firstly, install the module with PIP:
 
 ```shell
-pip install -e git://github.com/kaedroho/wagtail-condensedinlinepanel.git@v0.1#egg=wagtail-condensedinlinepanel
+pip install wagtail-condensedinlinepanel==0.2
 ```
 
 Then, add ``condensedinlinepanel`` to your ``INSTALLED_APPS``:
