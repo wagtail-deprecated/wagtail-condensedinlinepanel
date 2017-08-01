@@ -1,7 +1,6 @@
 import json
 import django
 from django import forms
-from django.template.loader import render_to_string
 
 from modelcluster.forms import BaseChildFormSet
 
@@ -132,7 +131,7 @@ class BaseCondensedInlinePanel(BaseInlinePanel):
     formset_class = BaseCondensedInlinePanelFormSet
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(BaseCondensedInlinePanel, self).__init__(*args, **kwargs)
         self.formset.to_json()
 
     @classmethod
