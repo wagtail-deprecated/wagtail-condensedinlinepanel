@@ -16,6 +16,7 @@ interface Options {
     canDelete?: boolean,
     canOrder?: boolean,
     renderCardHeader?: renderCardHeaderFn,
+    panelLabel?: string,
 }
 
 
@@ -31,6 +32,7 @@ export function init(id: string, options: Options = {}) {
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
     const renderCardHeader = options['renderCardHeader'] || renderCardHeaderDefault;
+    const panelLabel = options['panelLabel'] || "Add";
 
     let element = document.getElementById(id);
     if (element === null) {
@@ -63,6 +65,7 @@ export function init(id: string, options: Options = {}) {
 
         let state = store.getState() || emptyState();
         ReactDOM.render(<DNDCardSet forms={state.forms}
+                                 panelLabel={panelLabel}
                                  renderCardHeader={renderCardHeader}
                                  canEdit={canEdit}
                                  canDelete={canDelete}
