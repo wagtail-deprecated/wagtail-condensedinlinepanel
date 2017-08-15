@@ -45,6 +45,10 @@ $color-red: #CD3238;
             text-overflow: ellipsis;
             width: calc(100% - 100px);
         }
+
+        .object.collapsible & h2:before, .object.collapsible & h2 label:before{
+            content: "";
+        }
     }
 
 

@@ -36,6 +36,10 @@
 	width: calc(100% - 100px);
 }
 
+.object.collapsible .condensed-inline-panel__card-header h2:before, .object.collapsible .condensed-inline-panel__card-header h2 label:before {
+  content: "";
+}
+
 .condensed-inline-panel__card--errors {
 	border-color: #CD3238;
 }
