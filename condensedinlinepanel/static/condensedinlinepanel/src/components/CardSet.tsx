@@ -15,6 +15,7 @@ export interface CardSetProps {
     store: Store<State | null | undefined>,
     dndKey?: string,
     formsetPrefix: string,
+    panelLabel: string,
     renderCardHeader: renderCardHeaderFn,
     canEdit: boolean,
     canDelete: boolean,
@@ -178,7 +179,7 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                 e.preventDefault();
                 return false;
             };
-            addButton = <button className="condensed-inline-panel__top-add-button button bicolor icon icon-plus" type="button" onClick={onClickAddButton}>Add</button>;
+            addButton = <button className="condensed-inline-panel__top-add-button button bicolor icon icon-plus" type="button" onClick={onClickAddButton}>{this.props.panelLabel}</button>;
         }
 
         return <div>

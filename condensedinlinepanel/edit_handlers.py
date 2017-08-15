@@ -154,9 +154,10 @@ class BaseCondensedInlinePanel(BaseInlinePanel):
 
 
 class CondensedInlinePanel(object):
-    def __init__(self, relation_name, panels=None, label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None):
+    def __init__(self, relation_name, panels=None, heading='', label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None):
         self.relation_name = relation_name
         self.panels = panels
+        self.heading = heading or label
         self.label = label
         self.help_text = help_text
         self.min_num = min_num
@@ -176,7 +177,8 @@ class CondensedInlinePanel(object):
             'relation_name': self.relation_name,
             'related': related,
             'panels': self.panels,
-            'heading': self.label,
+            'heading': self.heading,
+            'label': self.label,
             'help_text': self.help_text,
             # TODO: can we pick this out of the foreign key definition as an alternative?
             # (with a bit of help from the inlineformset object, as we do for label/heading)
