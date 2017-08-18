@@ -66,6 +66,7 @@ var CondensedInlinePanel =
 	    var canDelete = options['canDelete'] || canEdit;
 	    var canOrder = options['canOrder'] || false;
 	    var renderCardHeader = options['renderCardHeader'] || renderCardHeaderDefault;
+	    var panelLabel = options['panelLabel'] || "Add";
 	    var element = document.getElementById(id);
 	    if (element === null) {
 	        console.error("CondensedInlinePanel.init(): Element with id '" + id + "' does not exist.");
@@ -93,7 +94,7 @@ var CondensedInlinePanel =
 	            return;
 	        }
 	        var state = store.getState() || state_1.emptyState();
-	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, renderCardHeader: renderCardHeader, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
+	        ReactDOM.render(React.createElement(CardSet_1.DNDCardSet, { forms: state.forms, panelLabel: panelLabel, renderCardHeader: renderCardHeader, canEdit: canEdit, canDelete: canDelete, canOrder: canOrder, store: store, emptyForm: state.emptyForm, formTemplate: element.dataset['formTemplate'], formsetPrefix: id, sortCompareFunc: sortCompareFunc }), uiContainer);
 	    });
 	    // Keep sort order field up to date
 	    if (canOrder) {
@@ -28787,7 +28788,7 @@ var CondensedInlinePanel =
 	                e.preventDefault();
 	                return false;
 	            };
-	            addButton = React.createElement("button", { className: "condensed-inline-panel__top-add-button button bicolor icon icon-plus", type: "button", onClick: onClickAddButton }, "Add");
+	            addButton = React.createElement("button", { className: "condensed-inline-panel__top-add-button button bicolor icon icon-plus", type: "button", onClick: onClickAddButton }, this.props.panelLabel);
 	        }
 	        return React.createElement("div", null,
 	            addButton,
