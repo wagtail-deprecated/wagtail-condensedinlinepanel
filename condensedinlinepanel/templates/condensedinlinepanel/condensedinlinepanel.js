@@ -7,6 +7,9 @@
             {% if self.card_header_from_field %}
                 {# Get the card header value from a field and escape it #}
                 var value = form.fields['{{ self.card_header_from_field|escapejs }}'];
+                if (value===null){
+                  var value = "New {{ self.related_name }}";
+                }
                 var needsEscaping = true;
             {% elif self.card_header_from_js %}
                 {# The card_header_from_js field is set by a developer so we can assume it's safe #}
@@ -18,12 +21,17 @@
                 var needsEscaping = false;
             {% else %}
                 {# Developer forgot to set this #}
-                var value = "";
-                var needsEscaping = false;
+                if (form.as_str===undefined){
+                  var value = "New {{ self.related_name }}";
+                } else {
+                  var value = form.as_str;
+                }
+                var needsEscaping = true;
             {% endif %}
 
             if (value==null){
                 var value = "";
+                var needsEscaping = false;
             }
 
             value = value.toString();
