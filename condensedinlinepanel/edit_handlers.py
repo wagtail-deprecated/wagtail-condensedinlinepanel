@@ -8,6 +8,7 @@ from modelcluster.forms import BaseChildFormSet
 
 from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
 from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.utils import camelcase_to_underscore
 from wagtail.wagtailimages.models import AbstractImage
 from wagtail.wagtaildocs.models import Document
 
@@ -108,6 +109,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             'forms': [
                 {
                     'id': i,
+                    'as_str': str(form.instance),
                     'fields': {
                         field_name: form[field_name].value()
                         for field_name in form.fields.keys()
@@ -172,13 +174,17 @@ class CondensedInlinePanel(object):
         else:
             related = getattr(model, self.relation_name).related
 
+        related_name = camelcase_to_underscore(
+            related.related_model.__name__).replace("_", " ").title()
+
         return type(str('_CondensedInlinePanel'), (BaseCondensedInlinePanel,), {
             'model': model,
             'relation_name': self.relation_name,
             'related': related,
+            'related_name': related_name,
             'panels': self.panels,
-            'heading': self.heading,
-            'label': self.label,
+            'heading': self.heading or related_name,
+            'label': self.label or 'Add %s' % related_name,
             'help_text': self.help_text,
             # TODO: can we pick this out of the foreign key definition as an alternative?
             # (with a bit of help from the inlineformset object, as we do for label/heading)
