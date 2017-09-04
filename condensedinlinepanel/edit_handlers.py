@@ -3,12 +3,12 @@ from __future__ import absolute_import, unicode_literals
 import json
 import django
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
 from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
 from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.utils import camelcase_to_underscore
 from wagtail.wagtailimages.models import AbstractImage
 from wagtail.wagtaildocs.models import Document
 
@@ -156,7 +156,7 @@ class BaseCondensedInlinePanel(BaseInlinePanel):
 
 
 class CondensedInlinePanel(object):
-    def __init__(self, relation_name, panels=None, heading='', label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None):
+    def __init__(self, relation_name, panels=None, heading='', label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None, new_card_header_text=""):
         self.relation_name = relation_name
         self.panels = panels
         self.heading = heading or label
@@ -167,6 +167,7 @@ class CondensedInlinePanel(object):
         self.card_header_from_field = card_header_from_field
         self.card_header_from_js = card_header_from_js
         self.card_header_from_js_safe = card_header_from_js_safe
+        self.new_card_header_text = new_card_header_text
 
     def bind_to_model(self, model):
         if django.VERSION >= (1, 9):
@@ -174,17 +175,18 @@ class CondensedInlinePanel(object):
         else:
             related = getattr(model, self.relation_name).related
 
-        related_name = camelcase_to_underscore(
-            related.related_model.__name__).replace("_", " ").title()
+        heading = self.heading or _(related.related_model._meta.verbose_name_plural.capitalize())
+        new_card_header = self.new_card_header_text or _("New %s" % related.related_model._meta.verbose_name)
+        label = self.label or _('Add %s' % related.related_model._meta.verbose_name.capitalize())
 
         return type(str('_CondensedInlinePanel'), (BaseCondensedInlinePanel,), {
             'model': model,
             'relation_name': self.relation_name,
             'related': related,
-            'related_name': related_name,
             'panels': self.panels,
-            'heading': self.heading or related_name,
-            'label': self.label or 'Add %s' % related_name,
+            'heading': heading,
+            'new_card_header': new_card_header,
+            'label': label,
             'help_text': self.help_text,
             # TODO: can we pick this out of the foreign key definition as an alternative?
             # (with a bit of help from the inlineformset object, as we do for label/heading)
