@@ -175,9 +175,13 @@ class CondensedInlinePanel(object):
         else:
             related = getattr(model, self.relation_name).related
 
-        heading = self.heading or _(related.related_model._meta.verbose_name_plural.capitalize())
-        new_card_header = self.new_card_header_text or _("New %s" % related.related_model._meta.verbose_name)
-        label = self.label or _('Add %s' % related.related_model._meta.verbose_name.capitalize())
+        related_name = {
+            'related_verbose_name': related.related_model._meta.verbose_name,
+            'related_verbose_name_plural': related.related_model._meta.verbose_name_plural
+        }
+        heading = self.heading or _('%(related_verbose_name_plural)s') % related_name
+        new_card_header = self.new_card_header_text or _('New %(related_verbose_name)s') % related_name
+        label = self.label or _('Add %(related_verbose_name)s') % related_name
 
         return type(str('_CondensedInlinePanel'), (BaseCondensedInlinePanel,), {
             'model': model,
