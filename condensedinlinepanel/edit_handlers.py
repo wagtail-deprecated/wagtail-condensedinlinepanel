@@ -159,6 +159,7 @@ class CondensedInlinePanel(object):
     def __init__(self, relation_name, panels=None, heading='', label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None, new_card_header_text=""):
         self.relation_name = relation_name
         self.panels = panels
+        # TODO: label is used below for backwards compatibility. We may want to rethink this later.
         self.heading = heading or label
         self.label = label
         self.help_text = help_text
