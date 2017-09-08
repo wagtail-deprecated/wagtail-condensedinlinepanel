@@ -39,6 +39,8 @@ setup(
         'Framework :: Django :: 1.9',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
-    install_requires=[],
+    install_requires=[
+        'six>=1.10.0',
+    ],
     zip_safe=False,
 )

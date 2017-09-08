@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+import six
 
 import json
 import django
@@ -109,7 +110,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             'forms': [
                 {
                     'id': i,
-                    'as_str': str(form.instance),
+                    'instanceAsStr': six.text_type(form.instance),
                     'fields': {
                         field_name: form[field_name].value()
                         for field_name in form.fields.keys()
