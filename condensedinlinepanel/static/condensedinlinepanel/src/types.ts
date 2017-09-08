@@ -9,6 +9,9 @@ export interface Form {
     // Note: Not the same as the primary key of the object
     id: number,
 
+    // The in python string representation of the object
+    instanceAsStr?: string,
+
     // Is the form being edited (aka. is it expanded?)
     isEditing?: boolean,
 
