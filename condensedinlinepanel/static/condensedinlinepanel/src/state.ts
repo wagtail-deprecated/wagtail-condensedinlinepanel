@@ -38,7 +38,13 @@ export interface MoveFormAction {
     position: number,
 }
 
-export type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction;
+// Need to define an action without any required fields to satisfy type checking
+// (this is because redux will fire other events that we haven't defined here)
+export interface OtherAction {
+    type: "OTHER_ACTION",
+}
+
+export type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction | OtherAction;
 
 
 export function emptyState(): State {

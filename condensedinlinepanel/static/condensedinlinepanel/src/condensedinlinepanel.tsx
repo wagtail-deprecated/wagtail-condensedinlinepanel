@@ -72,7 +72,7 @@ export function init(id: string, options: Options = {}) {
                                  canOrder={canOrder}
                                  store={store}
                                  emptyForm={state.emptyForm}
-                                 formTemplate={element.dataset['formTemplate']}
+                                 formTemplate={element.dataset['formTemplate']||''}
                                  formsetPrefix={id}
                                  sortCompareFunc={sortCompareFunc} />, uiContainer);
     });

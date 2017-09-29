@@ -216,16 +216,14 @@ export class Card extends React.Component<CardProps, CardState> {
     }
 
     onDelete(e: MouseEvent) {
-        this.state.showDeleteConfirm = true;
-        this.setState(this.state);
+        this.setState({showDeleteConfirm: true});
 
         e.preventDefault();
         return false;
     }
 
     onDeleteCancel(e: MouseEvent) {
-        this.state.showDeleteConfirm = false;
-        this.setState(this.state);
+        this.setState({showDeleteConfirm: false});
 
         e.preventDefault();
         return false;
@@ -280,7 +278,7 @@ export class Card extends React.Component<CardProps, CardState> {
         /* Returns a list of class names to add to the card */
         let classes = ['condensed-inline-panel__card'];
 
-        if (Object.keys(this.props.form.errors).length > 0) {
+        if (this.props.form.errors && Object.keys(this.props.form.errors).length > 0) {
             classes.push('condensed-inline-panel__card--errors');
         }
 
