@@ -119,7 +119,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                     'errors': json.loads(form.errors.as_json()),
                     'position': i + 1,
 
-                    # #20 - Force the form to render its fields if it's not saved
+                    # #19 - Force the form to render its fields if it's not saved
                     # (As it doesn't have an object in the database, it needs to be
                     # recreated on every form submission)
                     'forceFormRender': form.instance.id is None,
