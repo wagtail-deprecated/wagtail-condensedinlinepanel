@@ -1,9 +1,6 @@
 {
   "name": "wagtail-condensedinlinepanel",
   "version": "1.0.0",
-  "scripts": {
-    "dev": "webpack -w"
-  },
   "author": "Karl Hobley <karlhobley10@gmail.com>",
   "license": "BSD",
   "devDependencies": {
