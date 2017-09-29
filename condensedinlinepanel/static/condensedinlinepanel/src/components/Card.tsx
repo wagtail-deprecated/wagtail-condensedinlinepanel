@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import {DragSource} from 'react-dnd';
 
 import {Form, FieldError} from '../types';
+import {FormContainer} from './FormContainer';
 
 
 export type customiseActionsFn = (props: CardProps, actions: any[]) => void;
@@ -10,7 +11,6 @@ export type onEditStartFn = (e: MouseEvent) => boolean;
 export type onEditCloseFn = (e: MouseEvent, newFields: {[name: string]: any;}) => boolean;
 export type onDeleteFn = (e: MouseEvent) => boolean;
 export type renderCardHeaderFn = (form: Form) => {__html: string};
-
 
 export interface CardProps {
     // The form this card represents
@@ -31,7 +31,7 @@ export interface CardProps {
     // A HTML template to use for the form
     template: string,
 
-    // The prefix appeneded to the beginning of the id of each field
+    // The prefix appended to the beginning of the id of each field
     formPrefix: string,
 
     // A hook to allow the action buttons to be customised.
@@ -80,109 +80,6 @@ export class Card extends React.Component<CardProps, CardState> {
 
         this.state = {
             showDeleteConfirm: false,
-        }
-    }
-
-    getFormHtml() {
-        return {
-            __html: this.props.template.replace(/__prefix__/g, this.props.form.id.toString())
-        };
-    }
-
-    initialiseForm() {
-        /* Called just after the form has been inserted into the DOM, this
-        initialises all of the componenents in the form */
-
-        // Find form element
-        let reactElement = ReactDOM.findDOMNode(this);
-        let formElement = reactElement.getElementsByClassName('condensed-inline-panel__form')[0];
-
-        // Copy field data into the form
-        for (let fieldName in this.props.form.fields) {
-            let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
-
-            if (fieldElement instanceof HTMLInputElement) {
-                fieldElement.value = this.props.form.fields[fieldName]
-            }
-        }
-
-        // Add errors
-        if (this.props.form.errors) {
-            for (let fieldName in this.props.form.errors) {
-                let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
-                if (fieldElement === null) {
-                    continue;
-                }
-                let fieldWrapperElement = fieldElement.closest('.field');
-                if (fieldWrapperElement === null) {
-                    continue;
-                }
-
-                fieldWrapperElement.classList.add('error');
-
-                // Append error text to field content
-                let fieldContent = fieldWrapperElement.getElementsByClassName('field-content')[0] || fieldWrapperElement;
-                let errors = document.createElement('p');
-                errors.classList.add('error-message');
-                errors.innerHTML = `<span>${this.props.form.errors[fieldName].map((error) => error.message).join(' ')}</span>`;
-                fieldContent.appendChild(errors);
-            }
-        }
-
-        // Run any script tags embedded in the form HTML
-        let scriptTags = formElement.getElementsByTagName('script');
-        for (let i = 0; i < scriptTags.length; i++) {
-            let scriptTag = scriptTags.item(i);
-
-            eval(scriptTag.innerHTML);
-        }
-
-        // HACK: Make page choosers work
-        let pageChoosers = formElement.getElementsByClassName('page-chooser');
-        for (let i = 0; i < pageChoosers.length; i++) {
-            let pageChooser = pageChoosers.item(i);
-            let match = pageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
-
-            if (match) {
-                let fieldName = match[1];
-
-                if (this.props.form.fields[fieldName]) {
-                    // Field has a value!
-
-                    // Remove blank class
-                    pageChooser.classList.remove('blank');
-
-                    // Set title
-                    pageChooser.getElementsByClassName('title')[0].textContent = this.props.form.extra[fieldName]['title'];
-                }
-            }
-        }
-
-        // HACK: Make image choosers work
-        let imageChoosers = formElement.getElementsByClassName('image-chooser');
-        for (let i = 0; i < imageChoosers.length; i++) {
-            let imageChooser = imageChoosers.item(i);
-            let match = imageChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
-
-            if (match) {
-                let fieldName = match[1];
-
-                if (this.props.form.fields[fieldName]) {
-                    // Field has a value!
-
-                    // Remove blank class
-                    imageChooser.classList.remove('blank');
-
-                    // Preview image
-                    let previewImage = imageChooser.querySelector('.preview-image img');
-                    if (previewImage instanceof HTMLImageElement) {
-                        previewImage.src = this.props.form.extra[fieldName]['preview_image'].src;
-                        previewImage.alt = this.props.form.extra[fieldName]['preview_image'].alt;
-                        previewImage.width = this.props.form.extra[fieldName]['preview_image'].width;
-                        previewImage.height = this.props.form.extra[fieldName]['preview_image'].height;
-                    }
-                }
-            }
         }
     }
 
@@ -308,7 +205,7 @@ export class Card extends React.Component<CardProps, CardState> {
     render() {
         let form = <div className="condensed-inline-panel__form" />;
         if (this.shouldRenderForm()) {
-            form = <div className="condensed-inline-panel__form" dangerouslySetInnerHTML={this.getFormHtml()} />
+            form = <FormContainer form={this.props.form} template={this.props.template} prefix={this.props.formPrefix} />;
         }
 
         let header = <div className="condensed-inline-panel__card-header">
@@ -325,20 +222,6 @@ export class Card extends React.Component<CardProps, CardState> {
             {header}
             {form}
         </div>;
-    }
-
-    componentDidUpdate(prevProps: CardProps, prevState: CardState) {
-        // If the form has just been rendered, run initialiseForm
-        if (this.shouldRenderForm() && !this.shouldRenderForm(prevProps)) {
-            this.initialiseForm();
-        }
-    }
-
-    componentDidMount() {
-        // If the form has just been rendered, run initialiseForm
-        if (this.shouldRenderForm()) {
-            this.initialiseForm();
-        }
     }
 }
 
