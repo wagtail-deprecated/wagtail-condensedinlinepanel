@@ -189,6 +189,10 @@ export class Card extends React.Component<CardProps, CardState> {
     shouldRenderForm(props=this.props) {
         /* Returns true if we need the form HTML to be rendered in the DOM */
 
+        if (props.form.forceFormRender) {
+            return true;
+        }
+
         // Note, we still need the form HTML when the form has been edited/deleted
         // so the changes get submitted back to Wagtail
         return (props.form.isEditing || props.form.hasChanged || props.form.isDeleted) && props.canEdit;

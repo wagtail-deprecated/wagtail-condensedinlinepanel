@@ -27,6 +27,9 @@ export interface Form {
     // The current position of the form in the panel (1 based)
     position: number,
 
+    // Set to true will force the form fields to be rendered in HTML
+    forceFormRender?: boolean,
+
     // The field data. Mapping of field names to values
     fields: {[name: string]: string;},
 
