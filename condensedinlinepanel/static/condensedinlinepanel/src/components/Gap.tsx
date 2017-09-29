@@ -60,7 +60,6 @@ export class Gap extends React.Component<GapProps, {}> {
 
 let dropTarget = {
     drop(props: any, monitor: any, component: any) {
-        console.log(props)
         component.drop(monitor.getItem().formId);
     }
 };
