@@ -4,7 +4,6 @@ import {DragSource} from 'react-dnd';
 
 import {Form, FieldError} from '../types';
 
-
 export interface FormContainerProps {
     // The form
     form: Form,

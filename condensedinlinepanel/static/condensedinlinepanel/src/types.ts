@@ -3,7 +3,6 @@ export interface FieldError {
     message: string,
 }
 
-
 export interface Form {
     // The ID assigned by Wagtail
     // Note: Not the same as the primary key of the object

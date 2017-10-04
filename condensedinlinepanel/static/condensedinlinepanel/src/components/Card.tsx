@@ -5,7 +5,6 @@ import {DragSource} from 'react-dnd';
 import {Form, FieldError} from '../types';
 import {FormContainer} from './FormContainer';
 
-
 export type customiseActionsFn = (props: CardProps, actions: any[]) => void;
 export type onEditStartFn = (e: MouseEvent) => boolean;
 export type onEditCloseFn = (e: MouseEvent, newFields: {[name: string]: any;}) => boolean;
@@ -60,11 +59,9 @@ export interface CardProps {
     onDelete: onDeleteFn,
 }
 
-
 export interface CardState {
     showDeleteConfirm: boolean
 }
-
 
 export class Card extends React.Component<CardProps, CardState> {
     /*
@@ -242,7 +239,6 @@ function dragSourceCollect(connect: any, monitor: any) {
         isDragging: monitor.isDragging(),
     };
 }
-
 
 // FIXME: Had to remove type because of https://github.com/gaearon/react-dnd/issues/581
 export let DraggableCard: React.ComponentClass<CardProps> = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);

@@ -1,10 +1,8 @@
 import * as React from 'react';
 import {DropTarget} from 'react-dnd';
 
-
 export type onAddFn = (position: number) => void;
 export type onDNDFn = (formId: number, position: number) => void;
-
 
 export interface GapProps {
     position: number,
@@ -14,7 +12,6 @@ export interface GapProps {
     onDND?: onDNDFn,
     connectDropTarget?: any,
 }
-
 
 export class Gap extends React.Component<GapProps, {}> {
     /*

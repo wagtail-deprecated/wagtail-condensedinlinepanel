@@ -1,6 +1,5 @@
 import {Form} from './types';
 
-
 export interface State {
     // List of all the forms in this session, including deleted and new forms
     // Note: Each form has an ID, which is an index into this array. To prevent
@@ -14,7 +13,6 @@ export interface State {
     // A form instance to copy when creating new forms. Has default values pre-filled
     emptyForm: Form,
 }
-
 
 export interface SetStateAction {
     type: "SET_STATE",
@@ -46,7 +44,6 @@ export interface OtherAction {
 
 export type Action = SetStateAction | SetFormAction | AddFormAction | MoveFormAction | OtherAction;
 
-
 export function emptyState(): State {
     /* Returns an empty state to use as a placeholder before an actual state is loaded */
 
@@ -65,7 +62,6 @@ export function emptyState(): State {
         }
     }
 }
-
 
 export function reducer(state: State|null = null, action: Action): State|null {
     if (action.type == 'SET_STATE') {

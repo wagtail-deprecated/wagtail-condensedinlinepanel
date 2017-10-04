@@ -8,7 +8,6 @@ import {State} from '../state';
 import {DraggableCard, customiseActionsFn, renderCardHeaderFn} from './Card';
 import {DroppableGap, onDNDFn, onAddFn} from './Gap';
 
-
 export interface CardSetProps {
     forms: Form[],
     sortCompareFunc: (a: Form, b: Form) => 1 | 0 | -1,
@@ -25,7 +24,6 @@ export interface CardSetProps {
     onDND?: onDNDFn,
     emptyForm: Form,
 }
-
 
 export class CardSet extends React.Component<CardSetProps, {}> {
     initGaps(forms: any[], onDND: onDNDFn, onAdd: onAddFn) {
