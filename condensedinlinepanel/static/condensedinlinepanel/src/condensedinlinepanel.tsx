@@ -12,7 +12,6 @@ import './condensedinlinepanel.scss';
 
 export {DraggableCard as Card, DNDCardSet as CardSet, reducer};
 
-
 interface Options {
     canEdit?: boolean,
     canDelete?: boolean,
@@ -21,13 +20,11 @@ interface Options {
     panelLabel?: string,
 }
 
-
 function renderCardHeaderDefault(form: Form) {
     return {
         __html: '',
     }
 }
-
 
 export function init(id: string, options: Options = {}) {
     const canEdit = options['canEdit'] || true;
