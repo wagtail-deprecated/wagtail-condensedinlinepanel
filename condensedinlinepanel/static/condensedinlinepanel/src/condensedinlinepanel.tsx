@@ -7,6 +7,8 @@ import {reducer, State, emptyState} from './state';
 import {DraggableCard, renderCardHeaderFn} from './components/Card';
 import {DNDCardSet} from './components/CardSet';
 
+// Need to import scss here so Webpack will find it. This will be exported as a separate css file
+import './condensedinlinepanel.scss';
 
 export {DraggableCard as Card, DNDCardSet as CardSet, reducer};
 

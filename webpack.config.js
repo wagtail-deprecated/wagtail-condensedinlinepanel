@@ -1,3 +1,9 @@
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+const extractScss = new ExtractTextPlugin({
+    filename: "condensedinlinepanel.css"
+});
+
 module.exports = {
     entry: "./condensedinlinepanel/static/condensedinlinepanel/src/condensedinlinepanel.tsx",
     output: {
@@ -23,6 +29,23 @@ module.exports = {
                 exclude: ["node_modules"],
                 use: ["ts-loader", "source-map-loader"]
             },
+            {
+                test: /\.scss$/,
+                use: extractScss.extract({
+                    use: [
+                        {
+                            loader: "css-loader"
+                        },
+                        {
+                            loader: "sass-loader"
+                        }
+                    ],
+                })
+            },
         ]
     },
+
+    plugins: [
+        extractScss,
+    ],
 };
