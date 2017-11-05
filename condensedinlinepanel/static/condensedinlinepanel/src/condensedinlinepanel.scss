@@ -1,6 +1,7 @@
 $color-green: #189370;
 $color-orange: #E9B04D;
 $color-red: #CD3238;
+$card-header-left-padding: 1.5em;
 
 
 .condensed-inline-panel {
@@ -35,7 +36,7 @@ $color-red: #CD3238;
 
     &__card-header {
         position: relative;
-        padding-left: 1.5em;
+        padding-left: $card-header-left-padding;
         background-color: #fafafa;
         height: 50px;
 
@@ -43,7 +44,9 @@ $color-red: #CD3238;
             margin: 0;
             line-height: 50px;
             text-overflow: ellipsis;
-            width: calc(100% - 100px);
+            overflow: hidden;
+            white-space: nowrap;
+            width: calc(100% - 110px);
         }
 
         .object.collapsible & h2:before, .object.collapsible & h2 label:before{
@@ -74,10 +77,18 @@ $color-red: #CD3238;
 
     &__card--new {
         border-left: 3px solid $color-green;
+
+        &__card-header {
+            padding-left: calc($card-header-left-padding - 2px);
+        }
     }
 
     &__card--changed {
         border-left: 3px solid $color-orange;
+
+        &__card-header {
+            padding-left: calc($card-header-left-padding - 2px);
+        }
     }
 
 
@@ -102,6 +113,10 @@ $color-red: #CD3238;
 
         &:hover {
             cursor: pointer;
+        }
+
+        &:before {
+            margin-right: 0;
         }
     }
 
@@ -174,6 +189,10 @@ $color-red: #CD3238;
 
         &:hover {
             color: darken(#43B1B0, 10%);
+        }
+
+        &:before {
+            margin-right: 0;
         }
     }
 
