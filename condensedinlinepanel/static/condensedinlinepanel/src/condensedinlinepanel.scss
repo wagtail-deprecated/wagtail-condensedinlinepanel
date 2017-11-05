@@ -79,7 +79,7 @@ $card-header-left-padding: 1.5em;
         border-left: 3px solid $color-green;
 
         &__card-header {
-            padding-left: calc($card-header-left-padding - 2px);
+            padding-left: calc(#{$card-header-left-padding} - 2px);
         }
     }
 
@@ -87,7 +87,7 @@ $card-header-left-padding: 1.5em;
         border-left: 3px solid $color-orange;
 
         &__card-header {
-            padding-left: calc($card-header-left-padding - 2px);
+            padding-left: calc(#{$card-header-left-padding} - 2px);
         }
     }
 
