@@ -37,11 +37,11 @@
   .condensed-inline-panel__card--new {
     border-left: 3px solid #189370; }
     .condensed-inline-panel__card--new__card-header {
-      padding-left: calc($card-header-left-padding - 2px); }
+      padding-left: calc(1.5em - 2px); }
   .condensed-inline-panel__card--changed {
     border-left: 3px solid #E9B04D; }
     .condensed-inline-panel__card--changed__card-header {
-      padding-left: calc($card-header-left-padding - 2px); }
+      padding-left: calc(1.5em - 2px); }
   .condensed-inline-panel__actions {
     position: absolute;
     right: 0;
