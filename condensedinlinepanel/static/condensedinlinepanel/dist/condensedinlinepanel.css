@@ -106,7 +106,11 @@
     visibility: hidden; }
   .condensed-inline-panel__form {
     display: none;
-    padding-left: 1.5em; }
+    padding-left: 1.5em;
+    padding-right: 1.5em; }
+    @media screen and (min-width: 50em) {
+      .condensed-inline-panel__form {
+        padding-right: 0; } }
     .condensed-inline-panel__form fieldset {
       padding-top: 1em;
       float: none; }
