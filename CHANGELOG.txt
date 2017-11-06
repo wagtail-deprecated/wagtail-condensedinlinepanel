@@ -1,0 +1,27 @@
+Changelog
+=========
+
+0.4 (IN DEVELOPMENT)
+~~~~~~~~~~~~~~~~~~~~
+
+- Minor styling fixes (#27; @ababic)
+
+0.3 (29.09.2017)
+~~~~~~~~~~~~~~~~
+
+- Python 2 compatibility (#11; @ababic)
+- Fixed card header issues (#14; @Adrian-Turjak)
+- Label/header customisation and better defaults (#16; @Adrian-Turjak)
+- Fixed bug which caused draft items to disappear when saving the page twice (#21; @kaedroho)
+- Fixed a bug which caused the field values to unset when reordering (#22; @kaedroho)
+
+0.2 (27.07.2017)
+~~~~~~~~~~~~~~~~
+
+- Card headers are now customisable
+- Internal refactoring
+
+0.1 (13.12.2016)
+~~~~~~~~~~~~~~~~
+
+- Initial release
