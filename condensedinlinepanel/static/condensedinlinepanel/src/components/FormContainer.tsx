@@ -37,7 +37,7 @@ export class FormContainer extends React.Component<FormContainerProps, {}> {
         for (let fieldName in this.props.form.fields) {
             let fieldElement = document.getElementById(`${this.props.prefix}-${fieldName}`);
 
-            if (fieldElement instanceof HTMLInputElement || fieldElement instanceof HTMLSelectElement) {
+            if (fieldElement instanceof HTMLInputElement || fieldElement instanceof HTMLTextAreaElement || fieldElement instanceof HTMLSelectElement) {
                 fieldElement.value = this.props.form.fields[fieldName];
             }
         }
