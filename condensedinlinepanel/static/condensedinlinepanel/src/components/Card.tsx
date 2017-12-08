@@ -105,7 +105,7 @@ export class Card extends React.Component<CardProps, CardState> {
         for (let fieldName in this.props.form.fields) {
             let fieldElement = document.getElementById(`${this.props.formPrefix}-${fieldName}`);
 
-            if (fieldElement instanceof HTMLInputElement) {
+            if (fieldElement instanceof HTMLInputElement || fieldElement instanceof HTMLTextAreaElement || fieldElement instanceof HTMLSelectElement) {
                 newFields[fieldName] = fieldElement.value;
             }
         }
