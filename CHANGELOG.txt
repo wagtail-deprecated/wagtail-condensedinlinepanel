@@ -5,6 +5,7 @@ Changelog
 ~~~~~~~~~~~~~~~~~~~~
 
 - Minor styling fixes (#27; @ababic)
+- Add support for TextFields (#29; @tylermadsen)
 
 0.3 (29.09.2017)
 ~~~~~~~~~~~~~~~~
