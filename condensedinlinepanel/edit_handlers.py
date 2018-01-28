@@ -8,10 +8,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
-from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailimages.models import AbstractImage
-from wagtail.wagtaildocs.models import Document
+from wagtail.admin.edit_handlers import InlinePanel
+from wagtail.core.models import Page
+from wagtail.images.models import AbstractImage
+from wagtail.documents.models import Document
 
 
 class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
