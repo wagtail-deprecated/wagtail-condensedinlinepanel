@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from wagtail.wagtailcore import hooks
+from wagtail.core import hooks
 
 
 # JS/CSS for custom edit handlers
