@@ -15,7 +15,8 @@
     "source-map-loader": "^0.2.1",
     "ts-loader": "^2.3.7",
     "typescript": "^2.5.3",
-    "webpack": "^3.6.0"
+    "webpack": "^3.6.0",
+    "webpack-merge": "^4.1.1"
   },
   "dependencies": {
     "react": "^15.0.2",
