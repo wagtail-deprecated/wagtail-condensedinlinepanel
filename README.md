@@ -8,9 +8,9 @@ may be hundreds of items in the panel.
 
 ## Features
 
- - Fast, react-based UI that hides away forms that aren't being used
+ - Fast, react-based UI which hides away forms that aren't being used
  - Drag and drop reordering
- - Create a new item at any point
+ - Add a new item at any point
 
 ## Installation
 
