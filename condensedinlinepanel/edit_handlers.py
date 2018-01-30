@@ -64,8 +64,14 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             data_json = json.loads(new_data[prefix])
 
             for form_id, form in enumerate(data_json['forms']):
-                for field_name, field_value in form['fields'].items():
-                    new_data.setdefault(prefix + '-' + str(form_id) + '-' + field_name, field_value)
+                # For forms that weren't expanded, add their data to the request manually.
+                # Note: Even though we're using setdefault, we need to check that the form
+                # was submitted so checkbox fields can be unchecked (because they don't
+                # submit anything in their unchecked state, setdefault may inadvertantly
+                # recheck them)
+                if prefix + '-' + str(form_id) + '-id' not in new_data:
+                    for field_name, field_value in form['fields'].items():
+                        new_data.setdefault(prefix + '-' + str(form_id) + '-' + field_name, field_value)
 
             delete_json = json.loads(new_data[prefix + '-DELETE'])
             for form_id in delete_json:
