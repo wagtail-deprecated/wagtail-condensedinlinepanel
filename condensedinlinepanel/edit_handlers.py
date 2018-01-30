@@ -1,17 +1,37 @@
 from __future__ import absolute_import, unicode_literals
+
+import datetime
+import json
 import six
 
-import json
 import django
 from django import forms
+from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
 from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
+from wagtail.wagtailadmin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailimages.models import AbstractImage
 from wagtail.wagtaildocs.models import Document
+
+
+class WagtailJSONEncoder(DjangoJSONEncoder):
+    def default(self, o):
+        # Don't include seconds in times
+        if isinstance(o, datetime.datetime):
+            fmt = getattr(settings, 'WAGTAIL_DATETIME_FORMAT', DEFAULT_DATETIME_FORMAT)
+            return o.strftime(fmt)
+        if isinstance(o, datetime.date):
+            fmt = getattr(settings, 'WAGTAIL_DATE_FORMAT', DEFAULT_DATE_FORMAT)
+            return o.strftime(fmt)
+        elif isinstance(o, datetime.time):
+            return o.strftime('%H:%M')
+        else:
+            return super(WagtailJSONEncoder, self).default(o)
 
 
 class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
@@ -132,7 +152,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                     for field_name in self.empty_form.fields.keys()
                 }
             }
-        })
+        }, cls=WagtailJSONEncoder)
 
 
 class BaseCondensedInlinePanel(BaseInlinePanel):
