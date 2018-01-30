@@ -38,7 +38,12 @@ export class FormContainer extends React.Component<FormContainerProps, {}> {
             let fieldElement = document.getElementById(`${this.props.prefix}-${fieldName}`);
 
             if (fieldElement instanceof HTMLInputElement || fieldElement instanceof HTMLTextAreaElement || fieldElement instanceof HTMLSelectElement) {
-                fieldElement.value = this.props.form.fields[fieldName];
+                if (fieldElement instanceof HTMLInputElement && fieldElement.type === "checkbox") {
+                    let fieldElementAny: any = fieldElement;
+                    fieldElementAny.checked = this.props.form.fields[fieldName];
+                } else {
+                    fieldElement.value = this.props.form.fields[fieldName];
+                }
             }
         }
 
