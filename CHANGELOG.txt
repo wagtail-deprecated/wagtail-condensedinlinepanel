@@ -6,14 +6,16 @@ Changelog
 
 - Wagtail 2.0 support (#33, @SalahAdDin)
 
-0.4 (05.02.2018)
-~~~~~~~~~~~~~~~~
+0.4/0.4.1 (05.02.2018)
+~~~~~~~~~~~~~~~~~~~~~~
 
 - Minor styling fixes (#27; @ababic)
 - Add support for TextFields (#29; @tylermadsen)
 - Localisation for Spanish and Turkish (#33, @SalahAdDin)
 - Add support for date and time fields (#36, @kaedroho)
 - Add support for DecimalFields (#36, @kaedroho)
+
+(note: 0.4.1 released to resolve a packaging issue)
 
 0.3 (29.09.2017)
 ~~~~~~~~~~~~~~~~
