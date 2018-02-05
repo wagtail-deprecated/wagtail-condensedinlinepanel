@@ -12,9 +12,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
-import wagtail.VERSION
+from wagtail import VERSION as WAGTAIL_VERSION
 
-if wagtail.VERSION >= (2, 0):
+if WAGTAIL_VERSION >= (2, 0):
     from wagtail.admin.edit_handlers import BaseInlinePanel
     from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
     from wagtail.core.models import Page

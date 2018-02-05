@@ -2,9 +2,9 @@ from __future__ import absolute_import, unicode_literals
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-import wagtail.VERSION
+from wagtail import VERSION as WAGTAIL_VERSION
 
-if wagtail.VERSION >= (2, 0):
+if WAGTAIL_VERSION >= (2, 0):
     from wagtail.core import hooks
 else:
     from wagtail.wagtailcore import hooks
