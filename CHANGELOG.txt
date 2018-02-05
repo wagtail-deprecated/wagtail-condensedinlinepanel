@@ -6,6 +6,11 @@ Changelog
 
 - Wagtail 2.0 support (#33, @SalahAdDin)
 
+0.4.2 (05.02.2018)
+~~~~~~~~~~~~~~~~~~
+
+- Fix incorrect import when checking Wagtail version
+
 0.4/0.4.1 (05.02.2018)
 ~~~~~~~~~~~~~~~~~~~~~~
 
