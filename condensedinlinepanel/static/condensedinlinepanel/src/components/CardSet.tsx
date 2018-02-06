@@ -36,11 +36,11 @@ export class CardSet extends React.Component<CardSetProps, {}> {
 
         for (let i = 0; i < forms.length; i++) {
             let depth = forms[i].props.form.depth;
-            let wasLastChild = lastDepth > depth;  // Was the last card the last child of its parent?
 
-            if (wasLastChild) {
-                // Add an extra gap at the end of the list of children
-                newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} depth={lastDepth} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+            // Add an extra gap at the end of the list of children
+            while (lastDepth > depth) {
+                newForms.push(<DroppableGap key={`gap-lastchild-${positionId}-${lastDepth}`} position={positionId} depth={lastDepth} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+                lastDepth--;
             }
 
             // Add a gap
@@ -52,6 +52,12 @@ export class CardSet extends React.Component<CardSetProps, {}> {
             lastDepth = depth;
         }
 
+        // Add an extra gap at the end of the list of children
+        while (lastDepth > 1) {
+            newForms.push(<DroppableGap key={`gap-lastchild-${positionId}-${lastDepth}`} position={positionId} depth={lastDepth} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+            lastDepth--;
+        }
+
         // Add the bottom gap
         newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} depth={1} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
 
@@ -60,6 +66,7 @@ export class CardSet extends React.Component<CardSetProps, {}> {
 
     render() {
         let renderedCards = [];
+        let deletedCards = [];
 
         // The DND event handler
 
@@ -166,21 +173,27 @@ export class CardSet extends React.Component<CardSetProps, {}> {
             };
 
             // Render the card component
-            renderedCards.push(<DraggableCard key={form.id}
-                                     form={form}
-                                     renderCardHeader={this.props.renderCardHeader}
-                                     canEdit={this.props.canEdit}
-                                     canDelete={this.props.canDelete}
-                                     canOrder={this.props.canOrder}
-                                     canStructure={this.props.canStructure}
-                                     template={this.props.formTemplate}
-                                     formPrefix={`${this.props.formsetPrefix}-${form.id.toString()}`}
-                                     customiseActions={this.props.customiseCardActions}
-                                     dndKey={this.props.dndKey||this.props.formsetPrefix}
-                                     onDND={onDND}
-                                     onEditStart={onEditStart}
-                                     onEditClose={onEditClose}
-                                     onDelete={onDelete} />);
+            let card = <DraggableCard key={form.id}
+                form={form}
+                renderCardHeader={this.props.renderCardHeader}
+                canEdit={this.props.canEdit}
+                canDelete={this.props.canDelete}
+                canOrder={this.props.canOrder}
+                canStructure={this.props.canStructure}
+                template={this.props.formTemplate}
+                formPrefix={`${this.props.formsetPrefix}-${form.id.toString()}`}
+                customiseActions={this.props.customiseCardActions}
+                dndKey={this.props.dndKey||this.props.formsetPrefix}
+                onDND={onDND}
+                onEditStart={onEditStart}
+                onEditClose={onEditClose}
+                onDelete={onDelete} />;
+
+            if (form.isDeleted) {
+                deletedCards.push(card);
+            } else {
+                renderedCards.push(card);
+            }
         }
 
         // Add gap objects into the cards
@@ -201,6 +214,7 @@ export class CardSet extends React.Component<CardSetProps, {}> {
         return <div>
             {addButton}
             {renderedCards}
+            {deletedCards}
         </div>;
     }
 }
