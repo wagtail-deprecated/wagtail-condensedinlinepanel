@@ -19,6 +19,7 @@ export interface CardSetProps {
     canEdit: boolean,
     canDelete: boolean,
     canOrder: boolean,
+    canStructure: boolean,
     formTemplate: string,
     customiseCardActions?: customiseActionsFn,
     onDND?: onDNDFn,
@@ -31,22 +32,76 @@ export class CardSet extends React.Component<CardSetProps, {}> {
 
         let positionId = 1;
         let newForms = [];
-
-        // Add the top gap
-        newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+        let lastDepth = 1;
 
         for (let i = 0; i < forms.length; i++) {
-            newForms.push(forms[i]);
+            let depth = forms[i].props.form.depth;
+            let wasLastChild = lastDepth > depth;  // Was the last card the last child of its parent?
+
+            if (wasLastChild) {
+                // Add an extra gap at the end of the list of children
+                newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} depth={lastDepth} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+            }
 
             // Add a gap
-            newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+            newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} depth={depth} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
+
+            // Add form
+            newForms.push(forms[i]);
+
+            lastDepth = depth;
         }
+
+        // Add the bottom gap
+        newForms.push(<DroppableGap key={'gap-' + positionId} position={positionId++} depth={1} dndKey={this.props.dndKey||this.props.formsetPrefix} onDND={onDND} onAdd={onAdd} />);
 
         return newForms;
     }
 
     render() {
         let renderedCards = [];
+
+        // The DND event handler
+
+        let onDND = this.props.onDND || ((formId, position, depth) => {
+            /* Called when a drag and drop action has been performed */
+            this.props.store.dispatch({
+                type: 'MOVE_FORM',
+                formId: formId,
+                position: position,
+                depth: depth,
+            });
+        });
+
+        let onAdd = (position: number, depth: number) => {
+            /* Fired when the user clicks the "add new" button */
+
+            let formId = this.props.forms.length;
+
+            // Create the form
+            this.props.store.dispatch({
+                type: 'ADD_FORM',
+                data: {
+                    fields: this.props.emptyForm.fields,
+                    extra: {},
+                    errors: {},
+                    isNew: true,
+                    hasChanged: true,
+                    isEditing: true,
+                    position: this.props.forms.length + 1,
+                    depth: 1,
+                    id: formId,
+                }
+            });
+
+            // Move it into position
+            this.props.store.dispatch({
+                type: 'MOVE_FORM',
+                formId: formId,
+                position: position,
+                depth: depth,
+            });
+        };
 
         // Sort the forms by their SORT field
         let sortedForms = this.props.forms.slice();
@@ -117,53 +172,16 @@ export class CardSet extends React.Component<CardSetProps, {}> {
                                      canEdit={this.props.canEdit}
                                      canDelete={this.props.canDelete}
                                      canOrder={this.props.canOrder}
+                                     canStructure={this.props.canStructure}
                                      template={this.props.formTemplate}
                                      formPrefix={`${this.props.formsetPrefix}-${form.id.toString()}`}
                                      customiseActions={this.props.customiseCardActions}
                                      dndKey={this.props.dndKey||this.props.formsetPrefix}
+                                     onDND={onDND}
                                      onEditStart={onEditStart}
                                      onEditClose={onEditClose}
                                      onDelete={onDelete} />);
         }
-
-        // The DND event handler
-
-        let onDND = this.props.onDND || ((formId, position) => {
-            /* Called when a drag and drop action has been performed */
-            this.props.store.dispatch({
-                type: 'MOVE_FORM',
-                formId: formId,
-                position: position,
-            });
-        });
-
-        let onAdd = (position: number) => {
-            /* Fired when the user clicks the "add new" button */
-
-            let formId = this.props.forms.length;
-
-            // Create the form
-            this.props.store.dispatch({
-                type: 'ADD_FORM',
-                data: {
-                    fields: this.props.emptyForm.fields,
-                    extra: {},
-                    errors: {},
-                    isNew: true,
-                    hasChanged: true,
-                    isEditing: true,
-                    position: this.props.forms.length + 1,
-                    id: formId,
-                }
-            });
-
-            // Move it into position
-            this.props.store.dispatch({
-                type: 'MOVE_FORM',
-                formId: formId,
-                position: position,
-            });
-        };
 
         // Add gap objects into the cards
         renderedCards = this.initGaps(renderedCards, onDND, onAdd);
@@ -172,7 +190,7 @@ export class CardSet extends React.Component<CardSetProps, {}> {
         let addButton = null;
         if (this.props.canEdit) {
             let onClickAddButton = (e: any) => {
-                onAdd(1);
+                onAdd(1, 1);
 
                 e.preventDefault();
                 return false;

@@ -34,6 +34,7 @@ export interface MoveFormAction {
     type: "MOVE_FORM",
     formId: number,
     position: number,
+    depth: number,
 }
 
 // Need to define an action without any required fields to satisfy type checking
@@ -56,6 +57,7 @@ export function emptyState(): State {
             isDeleted: false,
             hasChanged: false,
             position: 1,
+            depth: 1,
             fields: {},
             extra: {},
             errors: {},
@@ -94,6 +96,7 @@ export function reducer(state: State|null = null, action: Action): State|null {
         let newPosition = action.position;
         if (newPosition > previousPosition) newPosition--;
         movedForm.position = newPosition;
+        movedForm.depth = action.depth;
 
         // Update sort orders of all other forms
         for (let i = 0; i < newForms.length; i++) {

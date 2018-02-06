@@ -27,6 +27,8 @@ else:
     from wagtail.wagtailimages.models import AbstractImage
     from wagtail.wagtaildocs.models import Document
 
+from .models import Structured
+
 
 class WagtailJSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -48,6 +50,26 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
     A special formset class that stores all of its data in a single JSON-formatted
     field.
     """
+    def add_fields(self, form, index):
+        super(BaseCondensedInlinePanelFormSet, self).add_fields(form, index)
+
+        if self.can_structure:
+            form.fields['depth'] = forms.IntegerField(label=_('Depth'), required=True, widget=forms.HiddenInput)
+
+    def save_new(self, form, commit=True):
+        instance = super(BaseCondensedInlinePanelFormSet, self).save_new(form, commit=commit)
+        instance.depth = form.cleaned_data['depth']
+        if commit:
+            instance.save(update_fields=['depth'])
+        return instance
+
+    def save_existing(self, form, instance, commit=True):
+        instance = super(BaseCondensedInlinePanelFormSet, self).save_existing(form, instance, commit=commit)
+        instance.depth = form.cleaned_data['depth']
+        if commit:
+            instance.save(update_fields=['depth'])
+        return instance
+
     def process_post_data(self, data, *args, **kwargs):
         """
         Called when initialising the formset with POST data. This method unpacks
@@ -82,9 +104,16 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                 for form_id, form_order in enumerate(order_json):
                     new_data[prefix + '-' + str(form_id) + '-ORDER'] = form_order
 
+            if self.can_structure:
+                depth_json = json.loads(new_data[prefix + '-DEPTH'])
+                for form_id, form_depth in enumerate(depth_json):
+                    new_data[prefix + '-' + str(form_id) + '-depth'] = form_depth
+
         return new_data
 
     def __init__(self, data, *args, **kwargs):
+        self.can_structure = issubclass(self.model, Structured)
+
         if data is not None:
             data = self.process_post_data(data, *args, **kwargs)
         super(BaseCondensedInlinePanelFormSet, self).__init__(data, *args, **kwargs)
@@ -153,6 +182,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                     'extra': get_form_extra_data(form),
                     'errors': json.loads(form.errors.as_json()),
                     'position': i + 1,
+                    'depth': form.instance.depth if self.can_structure else 1,
 
                     # #19 - Force the form to render its fields if it's not saved
                     # (As it doesn't have an object in the database, it needs to be

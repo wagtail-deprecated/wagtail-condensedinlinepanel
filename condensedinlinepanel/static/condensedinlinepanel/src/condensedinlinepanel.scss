@@ -28,6 +28,14 @@ $card-header-left-padding: 1.5em;
         background-color: #FFF;
         border: 1px solid #EEE;
         transition: background-color 0.2s ease 0s;
+
+        &[data-depth="2"] {
+            margin-left: 20px;
+        }
+
+        &[data-depth="3"] {
+            margin-left: 40px;
+        }
     }
 
     &__card--editing {
@@ -182,6 +190,14 @@ $card-header-left-padding: 1.5em;
 
     &__gap {
         text-align: right;
+
+        &[data-depth="2"] {
+            margin-left: 20px;
+        }
+
+        &[data-depth="3"] {
+            margin-left: 40px;
+        }
     }
 
     &__add-button {

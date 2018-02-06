@@ -16,6 +16,7 @@ interface Options {
     canEdit?: boolean,
     canDelete?: boolean,
     canOrder?: boolean,
+    canStructure?: boolean,
     renderCardHeader?: renderCardHeaderFn,
     panelLabel?: string,
 }
@@ -30,6 +31,7 @@ export function init(id: string, options: Options = {}) {
     const canEdit = options['canEdit'] || true;
     const canDelete = options['canDelete'] || canEdit;
     const canOrder = options['canOrder'] || false;
+    const canStructure = options['canStructure'] || false;
     const renderCardHeader = options['renderCardHeader'] || renderCardHeaderDefault;
     const panelLabel = options['panelLabel'] || "Add";
 
@@ -69,6 +71,7 @@ export function init(id: string, options: Options = {}) {
                                  canEdit={canEdit}
                                  canDelete={canDelete}
                                  canOrder={canOrder}
+                                 canStructure={canStructure}
                                  store={store}
                                  emptyForm={state.emptyForm}
                                  formTemplate={element.dataset['formTemplate']||''}
@@ -89,6 +92,23 @@ export function init(id: string, options: Options = {}) {
 
             if (sortOrderField instanceof HTMLInputElement) {
                 sortOrderField.value = JSON.stringify(sortOrders);
+            }
+        });
+    }
+
+    // Keep depth field up to date
+    if (canStructure) {
+        let depthField = element.getElementsByClassName('condensed-inline-panel__depth')[0];
+        store.subscribe(() => {
+            let state = store.getState() || emptyState();
+            let depths = [];
+
+            for (let i = 0; i< state.forms.length; i++) {
+                depths.push(state.forms[i].depth);
+            }
+
+            if (depthField instanceof HTMLInputElement) {
+                depthField.value = JSON.stringify(depths);
             }
         });
     }

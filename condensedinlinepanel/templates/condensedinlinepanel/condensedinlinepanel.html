@@ -6,6 +6,10 @@
         <input class="condensed-inline-panel__sort-order" type="hidden" name="{{ self.formset.prefix }}-ORDER">
     {% endif %}
 
+    {% if self.formset.can_structure %}
+        <input class="condensed-inline-panel__depth" type="hidden" name="{{ self.formset.prefix }}-DEPTH">
+    {% endif %}
+
     {{ self.formset.management_form }}
 
     <div class="condensed-inline-panel__ui-container"></div>

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import {DropTarget} from 'react-dnd';
 
-export type onAddFn = (position: number) => void;
-export type onDNDFn = (formId: number, position: number) => void;
+export type onAddFn = (position: number, depth: number) => void;
+export type onDNDFn = (formId: number, position: number, depth: number) => void;
 
 export interface GapProps {
     position: number,
+    depth: number,
     onAdd: onAddFn,
     dndKey: string,
     isOver?: boolean
@@ -21,7 +22,7 @@ export class Gap extends React.Component<GapProps, {}> {
 
     drop(formId: number) {
         if (this.props.onDND) {
-            this.props.onDND(formId, this.props.position);
+            this.props.onDND(formId, this.props.position, this.props.depth);
         }
     }
 
@@ -32,18 +33,18 @@ export class Gap extends React.Component<GapProps, {}> {
         if (this.props.isOver) {
             classes.push('condensed-inline-panel__gap--over');
 
-            gap = <div className={classes.join(' ')}>
+            gap = <div className={classes.join(' ')} data-depth={this.props.depth}>
                       <div className="condensed-inline-panel__gap-pseudoform" />
                   </div>;
         } else {
             let onAdd = (e: any) => {
-                this.props.onAdd(this.props.position);
+                this.props.onAdd(this.props.position, this.props.depth);
 
                 e.preventDefault();
                 return false;
             };
 
-            gap = <div className={classes.join(' ')}>
+            gap = <div className={classes.join(' ')} data-depth={this.props.depth}>
                       <a className="condensed-inline-panel__add-button icon icon-plus-inverse" href="#" onClick={onAdd}></a>
                   </div>;
         }

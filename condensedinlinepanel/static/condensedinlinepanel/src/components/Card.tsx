@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {DragSource} from 'react-dnd';
+import {DragSource, DropTarget} from 'react-dnd';
 
 import {Form, FieldError} from '../types';
 import {FormContainer} from './FormContainer';
+import {onDNDFn} from './Gap';
 
 export type customiseActionsFn = (props: CardProps, actions: any[]) => void;
 export type onEditStartFn = (e: MouseEvent) => boolean;
@@ -27,6 +28,9 @@ export interface CardProps {
     // Set to true if this card can be moved
     canOrder: boolean,
 
+    // Set to true if the cardset is a tree structure
+    canStructure: boolean,
+
     // A HTML template to use for the form
     template: string,
 
@@ -42,10 +46,14 @@ export interface CardProps {
     // This prevents cards from being ordered across different sets.
     dndKey: string,
 
+    onDND?: onDNDFn,
+
 
     // The following props are added by react-dnd
     connectDragSource?: any,
+    connectDropTarget?: any,
     isDragging?: boolean,
+    isOver?: boolean,
 
     // Events
 
@@ -172,6 +180,13 @@ export class Card extends React.Component<CardProps, CardState> {
         return actions;
     }
 
+    // Called when a card is dropped on top of this one
+    drop(formId: number) {
+        if (this.props.onDND) {
+            this.props.onDND(formId, this.props.form.position + 1, this.props.form.depth + 1);
+        }
+    }
+
     getClassNames() {
         /* Returns a list of class names to add to the card */
         let classes = ['condensed-inline-panel__card'];
@@ -214,8 +229,11 @@ export class Card extends React.Component<CardProps, CardState> {
 
         // Hook into react dnd
         header = this.props.connectDragSource(header);
+        if (this.props.canStructure) {
+            header = this.props.connectDropTarget(header);
+        }
 
-        return <div className={this.getClassNames().join(' ')}>
+        return <div className={this.getClassNames().join(' ')} data-depth={this.props.form.depth}>
             {header}
             {form}
         </div>;
@@ -240,5 +258,19 @@ function dragSourceCollect(connect: any, monitor: any) {
     };
 }
 
+let dropTarget = {
+    drop(props: any, monitor: any, component: any) {
+        component.drop(monitor.getItem().formId);
+    }
+};
+
+function dropTargetCollect(connect: any, monitor: any) {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.canDrop() && monitor.isOver(),
+    };
+}
+
 // FIXME: Had to remove type because of https://github.com/gaearon/react-dnd/issues/581
-export let DraggableCard: React.ComponentClass<CardProps> = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(Card);
+let DroppableCard: React.ComponentClass<CardProps> = DropTarget((props) => props.dndKey, dropTarget, dropTargetCollect)(Card);
+export let DraggableCard: React.ComponentClass<CardProps> = DragSource((props) => props.dndKey, dragSource, dragSourceCollect)(DroppableCard);
