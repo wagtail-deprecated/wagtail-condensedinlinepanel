@@ -189,8 +189,6 @@ $card-header-left-padding: 1.5em;
     // Add button
 
     &__gap {
-        text-align: right;
-
         &[data-depth="2"] {
             margin-left: 20px;
         }
@@ -205,10 +203,6 @@ $card-header-left-padding: 1.5em;
 
         &:hover {
             color: darken(#43B1B0, 10%);
-        }
-
-        &:before {
-            margin-right: 0;
         }
     }
 
