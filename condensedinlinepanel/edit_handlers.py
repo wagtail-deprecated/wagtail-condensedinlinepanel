@@ -4,7 +4,6 @@ import datetime
 import json
 import six
 
-import django
 from django import forms
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
@@ -15,7 +14,7 @@ from modelcluster.forms import BaseChildFormSet
 from wagtail import VERSION as WAGTAIL_VERSION
 
 if WAGTAIL_VERSION >= (2, 0):
-    from wagtail.admin.edit_handlers import BaseInlinePanel
+    from wagtail.admin.edit_handlers import InlinePanel
     from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
     from wagtail.core.models import Page
     from wagtail.images.models import AbstractImage
@@ -48,6 +47,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
     A special formset class that stores all of its data in a single JSON-formatted
     field.
     """
+
     def process_post_data(self, data, *args, **kwargs):
         """
         Called when initialising the formset with POST data. This method unpacks
@@ -170,75 +170,59 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
         }, cls=WagtailJSONEncoder)
 
 
-class BaseCondensedInlinePanel(BaseInlinePanel):
+class CondensedInlinePanel(InlinePanel):
     template = 'condensedinlinepanel/condensedinlinepanel.html'
     js_template = 'condensedinlinepanel/condensedinlinepanel.js'
     formset_class = BaseCondensedInlinePanelFormSet
 
-    def __init__(self, *args, **kwargs):
-        super(BaseCondensedInlinePanel, self).__init__(*args, **kwargs)
-        self.formset.to_json()
-
-    @classmethod
-    def required_formsets(cls):
-        child_edit_handler_class = cls.get_child_edit_handler_class()
-
-        return {
-            cls.relation_name: {
-                'formset': cls.formset_class,
-                'fields': child_edit_handler_class.required_fields(),
-                'widgets': child_edit_handler_class.widget_overrides(),
-                'min_num': cls.min_num,
-                'validate_min': cls.min_num is not None,
-                'max_num': cls.max_num,
-                'validate_max': cls.max_num is not None
-            }
-        }
-
-
-class CondensedInlinePanel(object):
-    def __init__(self, relation_name, panels=None, heading='', label='', help_text='', min_num=None, max_num=None, card_header_from_field=None, card_header_from_js=None, card_header_from_js_safe=None, new_card_header_text=""):
-        self.relation_name = relation_name
-        self.panels = panels
+    def __init__(self,
+                 relation_name,
+                 panels=None,
+                 heading='',
+                 label='',
+                 min_num=None,
+                 max_num=None,
+                 classname='',
+                 card_header_from_field=None,
+                 card_header_from_js=None,
+                 card_header_from_js_safe=None,
+                 new_card_header_text="",
+                 *args, **kwargs):
+        super().__init__(relation_name,
+                         panels,
+                         heading,
+                         label,
+                         min_num,
+                         max_num,
+                         classname,
+                         *args, **kwargs)
+        # self.formset.to_json()
         # TODO: label is used below for backwards compatibility. We may want to rethink this later.
         self.heading = heading or label
-        self.label = label
-        self.help_text = help_text
-        self.min_num = min_num
-        self.max_num = max_num
         self.card_header_from_field = card_header_from_field
         self.card_header_from_js = card_header_from_js
         self.card_header_from_js_safe = card_header_from_js_safe
         self.new_card_header_text = new_card_header_text
 
-    def bind_to_model(self, model):
-        if django.VERSION >= (1, 9):
-            related = getattr(model, self.relation_name).rel
-        else:
-            related = getattr(model, self.relation_name).related
+    def clone(self):
+        new = super().clone()
+        new.card_header_from_field = self.card_header_from_field
+        new.card_header_from_js = self.card_header_from_js
+        new.card_header_from_js_safe = self.card_header_from_js_safe
+        new.new_card_header_text = self.new_card_header_text
+        return new
 
+    def required_formsets(self):
+        formsets = super().required_formsets()
+        formsets[self.relation_name]['formset'] = self.formset_class
+        return formsets
+
+    def on_instance_bound(self):
+        super().on_instance_bound()
         related_name = {
-            'related_verbose_name': related.related_model._meta.verbose_name,
-            'related_verbose_name_plural': related.related_model._meta.verbose_name_plural
+            'related_verbose_name': self.related.related_model._meta.verbose_name,
+            'related_verbose_name_plural': self.related.related_model._meta.verbose_name_plural
         }
-        heading = self.heading or _('%(related_verbose_name_plural)s') % related_name
-        new_card_header = self.new_card_header_text or _('New %(related_verbose_name)s') % related_name
-        label = self.label or _('Add %(related_verbose_name)s') % related_name
-
-        return type(str('_CondensedInlinePanel'), (BaseCondensedInlinePanel,), {
-            'model': model,
-            'relation_name': self.relation_name,
-            'related': related,
-            'panels': self.panels,
-            'heading': heading,
-            'new_card_header': new_card_header,
-            'label': label,
-            'help_text': self.help_text,
-            # TODO: can we pick this out of the foreign key definition as an alternative?
-            # (with a bit of help from the inlineformset object, as we do for label/heading)
-            'min_num': self.min_num,
-            'max_num': self.max_num,
-            'card_header_from_field': self.card_header_from_field,
-            'card_header_from_js': self.card_header_from_js,
-            'card_header_from_js_safe': self.card_header_from_js_safe,
-        })
+        self.heading = self.heading or _('%(related_verbose_name_plural)s') % related_name
+        self.new_card_header_text = self.new_card_header_text or _('New %(related_verbose_name)s') % related_name
+        self.label = self.label or _('Add %(related_verbose_name)s') % related_name
