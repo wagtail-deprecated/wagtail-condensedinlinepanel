@@ -146,5 +146,26 @@ export class FormContainer extends React.Component<FormContainerProps, {}> {
                 }
             }
         }
+
+        // HACK: Make document choosers work
+        let documentChoosers = formElement.getElementsByClassName('document-chooser');
+        for (let i = 0; i < documentChoosers.length; i++) {
+            let documentChooser = documentChoosers.item(i);
+            let match = documentChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
+
+            if (match) {
+                let fieldName = match[1];
+
+                if (this.props.form.fields[fieldName]) {
+                    // Field has a value!
+
+                    // Remove blank class
+                    documentChooser.classList.remove('blank');
+
+                    // Set title
+                    documentChooser.getElementsByClassName('title')[0].textContent = this.props.form.extra[fieldName]['title'];
+                }
+            }
+        }
     }
 }
