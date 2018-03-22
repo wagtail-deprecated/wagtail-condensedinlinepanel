@@ -4,7 +4,7 @@ Changelog
 0.5 (xx.xx.xxxx)
 ~~~~~~~~~~~~~~~~
 
-- Wagtail 2.0 support (#33, @SalahAdDin)
+- Wagtail 2.0 support (#44, @nvsit) (#33, @SalahAdDin)
 
 0.4.2 (05.02.2018)
 ~~~~~~~~~~~~~~~~~~
