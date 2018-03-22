@@ -125,5 +125,26 @@ export class FormContainer extends React.Component<FormContainerProps, {}> {
                 }
             }
         }
+
+        // HACK: Make snippet choosers work
+        let snippetChoosers = formElement.getElementsByClassName('snippet-chooser');
+        for (let i = 0; i < snippetChoosers.length; i++) {
+            let snippetChooser = snippetChoosers.item(i);
+            let match = snippetChooser.id.match(/id_[^-]*-\d+-([^-]*)-chooser/);
+
+            if (match) {
+                let fieldName = match[1];
+
+                if (this.props.form.fields[fieldName]) {
+                    // Field has a value!
+
+                    // Remove blank class
+                    snippetChooser.classList.remove('blank');
+
+                    // Set title
+                    snippetChooser.getElementsByClassName('title')[0].textContent = this.props.form.extra[fieldName]['title'];
+                }
+            }
+        }
     }
 }

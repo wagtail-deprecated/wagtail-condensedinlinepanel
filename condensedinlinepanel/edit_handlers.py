@@ -127,6 +127,10 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                             data[field_name] = {
                                 'title': obj.title
                             }
+                        else:
+                            data[field_name] = {
+                                'title': str(obj)
+                            }
 
             return data
 
