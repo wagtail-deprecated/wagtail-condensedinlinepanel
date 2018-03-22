@@ -6,6 +6,10 @@ Changelog
 
 - Wagtail 2.0 support (#44, @nvsit) (#33, @SalahAdDin)
 
+**Breaking changes**
+
+- Dropped support for Wagtail 1.x and Python 2.x
+
 0.4.2 (05.02.2018)
 ~~~~~~~~~~~~~~~~~~
 
