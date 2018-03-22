@@ -11,20 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
-from wagtail import VERSION as WAGTAIL_VERSION
-
-if WAGTAIL_VERSION >= (2, 0):
-    from wagtail.admin.edit_handlers import InlinePanel
-    from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
-    from wagtail.core.models import Page
-    from wagtail.images.models import AbstractImage
-    from wagtail.documents.models import Document
-else:
-    from wagtail.wagtailadmin.edit_handlers import BaseInlinePanel
-    from wagtail.wagtailadmin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
-    from wagtail.wagtailcore.models import Page
-    from wagtail.wagtailimages.models import AbstractImage
-    from wagtail.wagtaildocs.models import Document
+from wagtail.admin.edit_handlers import InlinePanel
+from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
+from wagtail.core.models import Page
+from wagtail.images.models import AbstractImage
+from wagtail.documents.models import Document
 
 
 class WagtailJSONEncoder(DjangoJSONEncoder):
