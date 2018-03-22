@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 import json
 import six
@@ -30,7 +28,7 @@ class WagtailJSONEncoder(DjangoJSONEncoder):
         elif isinstance(o, datetime.time):
             return o.strftime('%H:%M')
         else:
-            return super(WagtailJSONEncoder, self).default(o)
+            return super().default(o)
 
 
 class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
@@ -78,7 +76,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
     def __init__(self, data, *args, **kwargs):
         if data is not None:
             data = self.process_post_data(data, *args, **kwargs)
-        super(BaseCondensedInlinePanelFormSet, self).__init__(data, *args, **kwargs)
+        super().__init__(data, *args, **kwargs)
 
     def to_json(self):
         def get_form_extra_data(form):
