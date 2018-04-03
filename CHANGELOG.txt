@@ -5,6 +5,7 @@ Changelog
 ~~~~~~~~~~~~~~~~
 
 - Wagtail 2.0 support (#44, @nvsit) (#33, @SalahAdDin)
+- Implemented support for snippet and document choosers (#46; @kaedroho)
 
 **Breaking changes**
 
