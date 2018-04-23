@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5 (xx.xx.xxxx)
+0.5 (23.04.2018)
 ~~~~~~~~~~~~~~~~
 
 - Wagtail 2.0 support (#44, @nvsit) (#33, @SalahAdDin)
