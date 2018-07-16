@@ -6,7 +6,8 @@ $card-header-left-padding: 1.5em;
 
 .condensed-inline-panel {
     // Fix header overlap
-    margin-top: 50px;
+    padding-top: 50px;
+    padding-bottom: 15px;
 
 
     // Reset Wagtail's text-transform on h2's
@@ -185,6 +186,7 @@ $card-header-left-padding: 1.5em;
     }
 
     &__add-button {
+        font-size: 18px;
         color: #43B1B0;
 
         &:hover {
