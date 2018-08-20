@@ -13,6 +13,7 @@ from wagtail.admin.edit_handlers import InlinePanel
 from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
 from wagtail.core.models import Page
 from wagtail.images.models import AbstractImage
+from wagtail.images.shortcuts import get_rendition_or_not_found
 from wagtail.documents.models import Document
 
 
@@ -113,7 +114,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                                 'title': obj.title
                             }
                         elif issubclass(model, AbstractImage):
-                            rendition = obj.get_rendition('max-130x130')
+                            rendition = get_rendition_or_not_found(obj, 'max-130x130')
                             data[field_name] = {
                                 'title': obj.title,
                                 'preview_image': {
