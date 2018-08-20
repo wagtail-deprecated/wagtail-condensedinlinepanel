@@ -11,6 +11,7 @@ from modelcluster.forms import BaseChildFormSet
 
 from wagtail.admin.edit_handlers import InlinePanel
 from wagtail.admin.widgets import DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT
+from wagtail.core.blocks import StreamValue
 from wagtail.core.models import Page
 from wagtail.images.models import AbstractImage
 from wagtail.images.shortcuts import get_rendition_or_not_found
@@ -28,6 +29,8 @@ class WagtailJSONEncoder(DjangoJSONEncoder):
             return o.strftime(fmt)
         elif isinstance(o, datetime.time):
             return o.strftime('%H:%M')
+        elif isinstance(o, StreamValue):
+            return o.stream_block.get_prep_value(o)
         else:
             return super().default(o)
 
