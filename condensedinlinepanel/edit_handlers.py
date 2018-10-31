@@ -213,8 +213,8 @@ class CondensedInlinePanel(InlinePanel):
     def on_instance_bound(self):
         super().on_instance_bound()
         related_name = {
-            'related_verbose_name': self.related.related_model._meta.verbose_name,
-            'related_verbose_name_plural': self.related.related_model._meta.verbose_name_plural
+            'related_verbose_name': self.db_field.related_model._meta.verbose_name,
+            'related_verbose_name_plural': self.db_field.related_model._meta.verbose_name_plural
         }
         self.heading = self.heading or _('%(related_verbose_name_plural)s') % related_name
         self.new_card_header_text = self.new_card_header_text or _('New %(related_verbose_name)s') % related_name
