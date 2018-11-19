@@ -140,7 +140,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
                     'id': i,
                     'instanceAsStr': six.text_type(form.instance),
                     'fields': {
-                        field_name: form[field_name].value()
+                        field_name: form[field_name].field.widget.format_value(form[field_name].value())
                         for field_name in form.fields.keys()
                     },
                     'extra': get_form_extra_data(form),
@@ -156,7 +156,7 @@ class BaseCondensedInlinePanelFormSet(BaseChildFormSet):
             ],
             'emptyForm': {
                 'fields': {
-                    field_name: self.empty_form[field_name].value()
+                    field_name: self.empty_form[field_name].field.widget.format_value(self.empty_form[field_name].value())
                     for field_name in self.empty_form.fields.keys()
                 }
             }
