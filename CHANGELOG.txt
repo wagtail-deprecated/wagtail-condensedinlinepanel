@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.5.1 (19.11.2018)
+~~~~~~~~~~~~~~~~~~
+
+- Fixed compatibility with Wagtail 2.3 (#55; @mcoconnor)
+
 0.5 (23.04.2018)
 ~~~~~~~~~~~~~~~~
 
