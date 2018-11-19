@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.5.2 (In Development)
+~~~~~~~~~~~~~~~~~~
+
+- Increase size of add buttons, and fix some issues with their styling (#49; Adrian Turjak)
+- Fixed crash when rendering an image chooser witha source file that doesn't exist (#53; @jhrr)
+
 0.5.1 (19.11.2018)
 ~~~~~~~~~~~~~~~~~~
 
