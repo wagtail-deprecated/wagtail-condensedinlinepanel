@@ -29,7 +29,7 @@ Then, add ``condensedinlinepanel`` to your ``INSTALLED_APPS``:
 INSTALLED_APPS = [
     ...
 
-    'condensedinlinepanel`,
+    'condensedinlinepanel',
 
     ...
 ]
