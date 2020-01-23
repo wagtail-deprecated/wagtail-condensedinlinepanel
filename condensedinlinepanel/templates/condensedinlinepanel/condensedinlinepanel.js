@@ -8,7 +8,7 @@
                 {# Get the card header value from a field and escape it #}
                 var value = form.fields['{{ self.card_header_from_field|escapejs }}'];
                 if (form.isNew){
-                  value = "{{ self.new_card_header }}";
+                  value = "{{ self.new_card_header_text }}";
                 }
                 var needsEscaping = true;
             {% elif self.card_header_from_js %}
@@ -22,7 +22,7 @@
             {% else %}
                 {# Developer forgot to set this #}
                 if (form.instanceAsStr===undefined){
-                  var value = "{{ self.new_card_header }}";
+                  var value = "{{ self.new_card_header_text }}";
                 } else {
                   var value = form.instanceAsStr;
                 }
