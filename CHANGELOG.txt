@@ -5,8 +5,8 @@ Changelog
 ~~~~~~~~~~~~~~~~~~
 
 - Fixed compatibility with Django 3.0 (#77; @torchingloom)
--  Maintain field value when widget.format_value() is empty (#62; @acerix)
--  fix new card header rendering (#76; @mexicat)
+- Maintain field value when widget.format_value() is empty (#62; @acerix)
+- Fix new card header rendering (#76; @mexicat)
 
 0.5.2 (20.11.2018)
 ~~~~~~~~~~~~~~~~~~
