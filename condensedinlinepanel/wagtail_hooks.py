@@ -1,4 +1,7 @@
-from django.contrib.staticfiles.templatetags.staticfiles import static
+try:
+    from django.contrib.staticfiles.templatetags.staticfiles import static
+except (ModuleNotFoundError, ImportError):
+    from django.templatetags.static import static
 
 from wagtail.core import hooks
 
