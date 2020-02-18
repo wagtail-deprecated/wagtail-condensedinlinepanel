@@ -1,6 +1,10 @@
-from django.contrib.staticfiles.templatetags.staticfiles import static
-
+import django
 from wagtail.core import hooks
+
+if django.VERSION >= (3, 0):
+    from django.templatetags.static import static
+else:
+    from django.contrib.staticfiles.templatetags.staticfiles import static
 
 
 # JS/CSS for custom edit handlers
