@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.3 (xx.xx.2020)
+0.5.3 (01.04.2020)
 ~~~~~~~~~~~~~~~~~~
 
 - Fixed compatibility with Django 3.0 (#77; @torchingloom)
