@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import pathlib
 
 from setuptools import setup, find_packages
 
@@ -20,7 +21,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD',
-    long_description=open('README.md').read(),
+    long_description=pathlib.Path('./README.md').read_text(),
+    long_description_content_type='text/markdown',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
