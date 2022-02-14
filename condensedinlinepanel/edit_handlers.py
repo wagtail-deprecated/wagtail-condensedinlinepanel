@@ -5,7 +5,7 @@ import six
 from django import forms
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from modelcluster.forms import BaseChildFormSet
 
