@@ -1,3 +1,5 @@
+> :warning: **No longer maintained**: This package's functionality is largely covered by the Wagtail 3.0 - 4.0 page editor redesign.
+
 # Condensed InlinePanel for Wagtail CMS
 
 This repository contains a drop-in replacement for Wagtail's ``InlinePanel``.
